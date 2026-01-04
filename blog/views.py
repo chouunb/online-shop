@@ -1,5 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
-def home_view(request):
-    return HttpResponse("Главная страница")
+from blog.models import Product
+
+
+def get_products_list(request):
+    products = Product.objects.all()
+
+    return render(request, template_name='blog/product_list.html', context={'products': products})
+
