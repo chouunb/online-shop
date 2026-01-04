@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ product.name }}</title>
-    </head>
-    <body>
-        <a href="{% url 'product_list' %}">&larr;Назад</a>
+{% extends "base.html" %}
+{% block page_title %}{{ product.name }}{% endblock page_title %}
 
-        <h1>Детали поста:</h1>
-        <h2>ID поста: {{ product.id }}</h2>
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>{{ product.price }}</p>
-        <p>{{ product.created_at }}</p>
-    </body>
-</html>
+{% block page_content %}
+    <a href="{% url 'product_list' %}">&larr;Назад</a>
+
+    <h1>Детали товара:</h1>
+    <h2>ID товара: {{ product.id }}</h2>
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.description }}</p>
+    <p>{{ product.price }}</p>
+    <p>{{ product.created_at }}</p>
+{% endblock page_content %}
