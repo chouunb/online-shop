@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
 from blog.models import Product
+from blog.forms import ProductForm
 
 
 def get_product_list(request):
@@ -15,31 +16,20 @@ def get_product_detail(request, product_id):
 
 def create_product(request):
     if request.method == "POST":
-        name = request.POST.get('name').strip()
-        description=request.POST.get('description').strip()
-        price=request.POST.get('price')
+        form = ProductForm(request.POST)
 
-        errors = {}
-
-        if not name:
-            errors['name'] = 'Название товара обязательно!'
-        if not description:
-            errors['description'] = 'Описание товара обязательно!'
-        if not price:
-            errors['price'] = 'Цена обязательна!'
-
-        if not errors:
-            product = Product.objects.create(name=name, description=description, price=price)
-
+        if form.is_valid():
+            product = Product.objects.create(
+                name=form.cleaned_data['name'], 
+                description=form.cleaned_data['description'], 
+                price=form.cleaned_data['price']
+                )
+                
             return redirect('product_detail', product_id=product.id)
         else:
-            context = {
-            'errors': errors,
-            'name': name,
-            'description': description,
-            'price': price
-            }
-
-            return render(request, 'shop/product_add.html', context)
+            return render(request, 'shop/product_add.html', {"form": form})
         
-    return render(request, 'shop/product_add.html')
+
+    form = ProductForm()
+
+    return render(request, 'shop/product_add.html', {"form": form})

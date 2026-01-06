@@ -8,40 +8,7 @@
     <form method="POST">
         {% csrf_token %}
 
-        <div>
-            <label for="nameInput">Название товара:</label>
-            <input 
-                id="nameInput" 
-                name="name" 
-                type="text" 
-                value="{{ name|default:'' }}"
-                placeholder="Название (максимальная длина 150 символов)"
-            >
-            {% if errors.name %}
-                <div style='color: red;'>{{ errors.name }} </div>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="descriptionInput">Описание:</label>
-            <textarea id="descriptionInput" name="description" rows="3">{{ description|default:'' }}</textarea>
-            {% if errors.description %}
-                <div style="color: red;">{{ errors.description }}</div>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="priceInput">Цена:</label>
-            <input 
-            id="priceInput" 
-            name="price" 
-            type="number"
-            value="{{ price|default:'' }}"
-            >
-            {% if errors.price %}
-                <div style="color: red;">{{ errors.price }}</div>
-            {% endif %}
-        </div>
+        {{ form.as_div }}
 
         <button type="submit">Создать</button>
     </form>
