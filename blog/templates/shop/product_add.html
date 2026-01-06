@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block page_title %}Создать пост{% endblock page_title %}
+
+{% block page_content %}
+    <h1>Продать товар</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div>
+            <label for="nameInput">Название товара:</label>
+            <input id="nameInput" name="name" type="text" placeholder="Название (максимальная длина 150 символов)" required>
+        </div>
+
+        <div>
+            <label for="descriptionInput">Описание:</label>
+            <textarea id="descriptionInput" name="description" rows="3"></textarea>
+        </div>
+
+        <div>
+            <label for="priceInput">Цена:</label>
+            <input id="priceInput" name="price" type="number" required>
+        </div>
+
+        <button type="submit">Создать</button>
+    </form>
+{% endblock page_content %}
