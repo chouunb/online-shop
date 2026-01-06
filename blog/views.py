@@ -15,21 +15,16 @@ def get_product_detail(request, product_id):
 
 
 def create_product(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST)
+    form = ProductForm(request.POST or None)
 
+    if request.method == "POST":
         if form.is_valid():
             product = Product.objects.create(
                 name=form.cleaned_data['name'], 
                 description=form.cleaned_data['description'], 
                 price=form.cleaned_data['price']
                 )
-                
+
             return redirect('product_detail', product_id=product.id)
-        else:
-            return render(request, 'shop/product_add.html', {"form": form})
-        
-
-    form = ProductForm()
-
+    
     return render(request, 'shop/product_add.html', {"form": form})
