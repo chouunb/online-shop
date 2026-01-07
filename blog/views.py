@@ -52,6 +52,10 @@ def update_product(request, product_id):
 
 
 def delete_product(request, product_id):
-    get_object_or_404(Product, id=product_id).delete()
+    product = get_object_or_404(Product, id=product_id)
 
-    return redirect("product_list")
+    if request.method == "POST":
+        product.delete()
+        return redirect("product_list")
+
+    return render(request, 'shop/confirm_product_delete.html', {'product': product})

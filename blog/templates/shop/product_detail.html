@@ -13,9 +13,5 @@
 
     <a href="{% url 'edit_product' product.id %}">Редактировать объявление</a>
 
-    <form method="POST" action="{% url 'remove_product' product.id %}">
-        {% csrf_token %}
-
-        <button type="submit">Удалить объявление</button>
-    </form>
+    <a href="{% url 'remove_product' product.id %}">Удалить объявление</a>
 {% endblock page_content %}
