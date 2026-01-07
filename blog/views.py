@@ -24,7 +24,7 @@ def create_product(request):
         if form.is_valid():
             product = form.save()
 
-            return redirect('product_detail', product_id=product.id)
+            return redirect('blog:product_detail', product_id=product.id)
     
     return render(request, 'shop/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
@@ -42,7 +42,7 @@ def update_product(request, product_id):
         if form.is_valid():
             form.save()
 
-            return redirect("product_detail", product_id=product.id)
+            return redirect("blog:product_detail", product_id=product.id)
         else:
             return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
@@ -56,6 +56,6 @@ def delete_product(request, product_id):
 
     if request.method == "POST":
         product.delete()
-        return redirect("product_list")
+        return redirect("blog:product_list")
 
     return render(request, 'shop/confirm_product_delete.html', {'product': product})
