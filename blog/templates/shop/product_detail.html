@@ -12,4 +12,10 @@
     <p>{{ product.created_at|date:"d.m.Y H:i" }}</p>
 
     <a href="{% url 'edit_product' product.id %}">Редактировать объявление</a>
+
+    <form method="POST" action="{% url 'remove_product' product.id %}">
+        {% csrf_token %}
+
+        <button type="submit">Удалить объявление</button>
+    </form>
 {% endblock page_content %}

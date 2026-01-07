@@ -49,3 +49,9 @@ def update_product(request, product_id):
     form = ProductForm(instance=product)
 
     return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
+
+
+def delete_product(request, product_id):
+    get_object_or_404(Product, id=product_id).delete()
+
+    return redirect("product_list")
