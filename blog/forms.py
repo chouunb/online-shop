@@ -1,26 +1,22 @@
 from django import forms
 
+from blog.models import Product
 
-class ProductForm(forms.Form):
-    name = forms.CharField(
-        max_length=255, 
-        label="Название товара:", 
-        required=False,
-        widget=forms.TextInput(attrs={
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price']
+        widgets = {
+            'name': forms.TextInput(attrs={
             'placeholder': "Название (максимальная длина 150 символов)"
         })
-    )
-
-    description = forms.CharField(
-        label="Описание товара:", 
-        widget=forms.Textarea(attrs={
-            'row': 3
-        })
-    )
-
-    price = forms.IntegerField(
-        label="Цена товара:",
-    )
+        }
+        labels = {
+            'name': 'Название товара:',
+            'description': 'Описание товара:'
+        }
 
     def clean_name(self):
         name=self.cleaned_data['name'].strip()
