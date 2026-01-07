@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
 from blog.models import Product
 from blog.forms import ProductForm
@@ -13,7 +14,7 @@ def get_product_list(request):
 def get_product_detail(request, product_id):
     return render(request, 'shop/product_detail.html', {"product": get_object_or_404(Product, id=product_id)})
 
-
+@login_required
 def create_product(request):
     name = "Создать объявление"
     submit_button_text = 'Создать'
