@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block page_title %}Редактировать объявление{% endblock page_title %}
+{% block page_title %}{{ name }}{% endblock page_title %}
 
 {% block page_content %}
-    <h1>Редактировать объявление</h1>
+    <h1>{{ name }}</h1>
 
     <form method="POST">
         {% csrf_token %}
@@ -16,6 +16,6 @@
             </div>
         {% endfor %}
 
-        <button type="submit">Сохранить</button>
+        <button type="submit">{{ submit_button_text }}</button>
     </form>
 {% endblock page_content %}

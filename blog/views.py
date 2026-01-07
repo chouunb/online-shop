@@ -15,6 +15,9 @@ def get_product_detail(request, product_id):
 
 
 def create_product(request):
+    name = "Создать объявление"
+    submit_button_text = 'Создать'
+
     form = ProductForm(request.POST or None)
 
     if request.method == "POST":
@@ -23,11 +26,14 @@ def create_product(request):
 
             return redirect('product_detail', product_id=product.id)
     
-    return render(request, 'shop/product_add.html', {"form": form})
+    return render(request, 'shop/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
 
 
 def update_product(request, product_id):
+    name = "Редактировать объявление"
+    submit_button_text = 'Сохранить'
+
     product = get_object_or_404(Product, id=product_id)   
 
     if request.method == "POST":
@@ -38,8 +44,8 @@ def update_product(request, product_id):
 
             return redirect("product_detail", product_id=product.id)
         else:
-            return render(request, 'shop/product_update.html', context={"form": form})
+            return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
     form = ProductForm(instance=product)
 
-    return render(request, 'shop/product_update.html', context={"form": form})
+    return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
