@@ -39,6 +39,9 @@ def update_product(request, product_id):
 
     product = get_object_or_404(Product, id=product_id)   
 
+    if (request.user != product.seller):
+        return render(request, 'shop/not_allowed.html')
+
     if request.method == "POST":
         form = ProductForm(request.POST, instance=product)
 
@@ -56,6 +59,9 @@ def update_product(request, product_id):
 
 def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+
+    if (request.user != product.seller):
+        return render(request, 'shop/not_allowed.html')
 
     if request.method == "POST":
         product.delete()
