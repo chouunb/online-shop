@@ -60,3 +60,6 @@ def delete_product(request, product_id):
         return redirect("blog:product_list")
 
     return render(request, 'shop/confirm_product_delete.html', {'product': product})
+
+def main_page_view(request):
+    return render(request, template_name='shop/main_page.html')
