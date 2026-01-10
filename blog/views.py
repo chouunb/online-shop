@@ -23,7 +23,9 @@ def create_product(request):
 
     if request.method == "POST":
         if form.is_valid():
-            product = form.save()
+            product = form.save(commit=False)
+            product.seller = request.user
+            product.save()
 
             return redirect('blog:product_detail', product_id=product.id)
     
