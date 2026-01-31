@@ -6,12 +6,7 @@
 
     {% if products %}
         {% for product in products %}
-            <div class="products-container" style="border: 1px solid black; margin-bottom: 10px; padding: 15px;">
-            <h2>Название товара: <a href="{% url 'blog:product_detail' product_id=product.id %}">{{ product.name }}</a></h2>
-            <p>Описание товара: {{ product.description }}</p>
-            <h3>Цена товара: {{ product.price }}</h3>
-            <small>Дата публикации: {{ product.created_at }}</small>
-            </div>
+            {% include 'shop/includes/product_container.html' %}
         {% endfor %}
     {% else %}
         <p>Товаров ещё нет. Загляните позже!</p>

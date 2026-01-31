@@ -1,0 +1,5 @@
+<div class="post-container" style="border: 1px solid black; margin-bottom: 10px; padding: 15px;">
+  <h2>Название товара: <a href="{% url 'blog:product_detail' product_id=product.id %}">{{ product.name }}</a></h2>
+  <p>Описание товара: {{ product.description }}</p>
+  <small>Дата создания объявления: {{ product.created_at|date:"d.m.Y H:i" }}</small>
+</div>
