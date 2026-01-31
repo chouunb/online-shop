@@ -11,7 +11,7 @@
     <p>{{ product.price }}</p>
     <p>{{ product.created_at|date:"d.m.Y H:i" }}</p>
 
-    <p>Продавец: {{ product.seller }}</p>
+    <p>Продавец: <a href="{% url "users:profile" username=product.seller.username %}">{{ product.seller }}<a></p>
 
     {% if request.user == product.seller %}
         <a href="{% url 'blog:edit_product' product.id %}">Редактировать объявление</a>

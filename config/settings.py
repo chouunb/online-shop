@@ -123,4 +123,4 @@ STATICFILES_DIRS = [BASE_DIR / 'static/']
 
 
 LOGIN_URL = 'users:login'
-DEFAULT_LOGIN_REDIRECT_URL = 'blog:product_list'
+DEFAULT_LOGIN_REDIRECT_URL = 'users:profile'
