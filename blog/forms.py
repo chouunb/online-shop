@@ -7,15 +7,17 @@ from blog.models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price']
+        fields = ['name', 'description', 'price', 'image']
         widgets = {
             'name': forms.TextInput(attrs={
             'placeholder': "Название (максимальная длина 150 символов)"
-        })
+        }),
+        'image': forms.FileInput(attrs={'class': 'form-control'})
         }
         labels = {
             'name': 'Название товара:',
-            'description': 'Описание товара:'
+            'description': 'Описание товара:',
+            'image': 'Изображение товара'
         }
 
     def clean_name(self):

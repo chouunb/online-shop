@@ -19,7 +19,7 @@ def create_product(request):
     name = "Создать объявление"
     submit_button_text = 'Создать'
 
-    form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST or None, request.FILES or None)
 
     if request.method == "POST":
         if form.is_valid():
@@ -43,7 +43,7 @@ def update_product(request, product_id):
         return render(request, 'shop/not_allowed.html')
 
     if request.method == "POST":
-        form = ProductForm(request.POST, instance=product)
+        form = ProductForm(request.POST, request.FILES, instance=product)
 
         if form.is_valid():
             form.save()
