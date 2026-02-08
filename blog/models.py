@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from django.utils.text import slugify
+from unidecode import unidecode
 
 User = get_user_model()
 
@@ -12,6 +15,12 @@ class Product(models.Model):
     
     name = models.CharField(max_length=255, verbose_name="Название")
     slug = models.SlugField(max_length=200, unique=True, editable=False, verbose_name="Слаг")
+    category = models.ForeignKey(
+        'Category',
+        related_name='products',
+        on_delete=models.CASCADE,
+        verbose_name="Категория"
+    )
     description = models.TextField(blank=True, verbose_name="Описание")
     price = models.IntegerField(verbose_name="Цена")
     image = models.ImageField(upload_to="product_images/", null=True, blank=True)
@@ -26,3 +35,24 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название')
+    slug = models.SlugField(unique=True, editable=False, verbose_name="Слаг")
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(unidecode(self.name))
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('blog:category_products', kwargs={'category_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = "Категории"
+        db_table = "shop_categories"
