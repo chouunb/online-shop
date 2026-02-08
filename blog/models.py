@@ -6,6 +6,7 @@ User = get_user_model()
 
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
+    slug = models.SlugField(max_length=200, unique=True, editable=False, verbose_name="Слаг")
     description = models.TextField(blank=True, verbose_name="Описание")
     price = models.IntegerField(verbose_name="Цена")
     image = models.ImageField(upload_to="product_images/", null=True, blank=True)
