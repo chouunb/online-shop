@@ -8,7 +8,7 @@ from blog.forms import ProductForm
 
 
 def get_product_list(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(status="published")
 
     return render(request, template_name='shop/product_list.html', context={'products': products})
 

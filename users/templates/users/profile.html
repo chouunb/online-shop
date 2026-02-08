@@ -11,7 +11,9 @@
 
   {% if products %}
     {% for product in products %}
-      {% include 'shop/includes/product_container.html' %}
+      {% if user == request.user or product.status != 'draft' %}
+        {% include 'shop/includes/product_container.html' %}
+      {% endif %}
     {% endfor %}
   {% else %}
     <p>Объявлений ещё нет. Загляните позже!</p>

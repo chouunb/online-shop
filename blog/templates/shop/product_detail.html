@@ -7,6 +7,9 @@
     <h1>Детали товара:</h1>
     <h2>ID товара: {{ product.id }}</h2>
     <h3>{{ product.name }}</h3>
+    {% if request.user == product.seller %}
+        Статус: {{ product.get_status_display }} 
+    {% endif %}
     {% if product.image %}
         <img src="{{ product.image.url }}" alt="Изображение товара">
     {% endif %}
