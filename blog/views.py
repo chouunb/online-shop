@@ -10,7 +10,7 @@ from blog.forms import ProductForm
 def get_product_list(request):
     products = Product.objects.filter(status="published")
 
-    return render(request, template_name='shop/product_list.html', context={'products': products})
+    return render(request, template_name='shop/pages/product_list.html', context={'products': products})
 
 
 def get_category_products(request, category_slug):
@@ -21,11 +21,11 @@ def get_category_products(request, category_slug):
     'category': category,
     'products': products
     }
-    return render(request, 'shop/category_products.html', context)
+    return render(request, 'shop/pages/category_products.html', context)
 
 
 def get_product_detail(request, product_slug):
-    return render(request, 'shop/product_detail.html', {"product": get_object_or_404(Product, slug=product_slug)})
+    return render(request, 'shop/pages/product_detail.html', {"product": get_object_or_404(Product, slug=product_slug)})
 
 @login_required
 def create_product(request):
@@ -43,7 +43,7 @@ def create_product(request):
 
             return redirect('blog:product_detail', product_slug=product.slug)
     
-    return render(request, 'shop/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})
+    return render(request, 'shop/pages/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
 
 
@@ -54,7 +54,7 @@ def update_product(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)   
 
     if (request.user != product.seller):
-        return render(request, 'shop/not_allowed.html')
+        return render(request, 'shop/pages/not_allowed.html')
 
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
@@ -64,24 +64,24 @@ def update_product(request, product_slug):
 
             return redirect("blog:product_detail", product_slug=product.slug)
         else:
-            return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
+            return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
     form = ProductForm(instance=product)
 
-    return render(request, 'shop/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
+    return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
 
 def delete_product(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
 
     if (request.user != product.seller):
-        return render(request, 'shop/not_allowed.html')
+        return render(request, 'shop/pages/not_allowed.html')
 
     if request.method == "POST":
         product.delete()
         return redirect("blog:product_list")
 
-    return render(request, 'shop/confirm_product_delete.html', {'product': product})
+    return render(request, 'shop/pages/confirm_product_delete.html', {'product': product})
 
 def main_page_view(request):
-    return render(request, template_name='shop/main_page.html')
+    return render(request, template_name='shop/pages/main_page.html')
