@@ -52,7 +52,11 @@ def create_product(request):
             product.slug = slugify(unidecode(product.name))
             product.save()
 
-            form.save_m2m()
+            tags = form.cleaned_data.get('tags_input')
+
+            for tag_name in tags:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                product.tags.add(tag)
 
             return redirect('blog:product_detail', product_slug=product.slug)
     
@@ -75,11 +79,18 @@ def update_product(request, product_slug):
         if form.is_valid():
             form.save()
 
+            tags = form.cleaned_data.get('tags_input')
+            product.tags.clear()
+            for tag_name in tags:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                product.tags.add(tag)
+
             return redirect("blog:product_detail", product_slug=product.slug)
         else:
             return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 
-    form = ProductForm(instance=product)
+    existing_tags = ", ".join(tag.name for tag in product.tags.all())
+    form = ProductForm(instance=product, initial={'tags_input': existing_tags})
 
     return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
 

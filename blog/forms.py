@@ -5,21 +5,27 @@ from blog.models import Product
 
 
 class ProductForm(forms.ModelForm):
+    tags_input = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите теги через запятую'
+        }),
+        label="Теги"
+    )
     class Meta:
         model = Product
-        fields = ['name','category', 'tags', 'description', 'price', 'image']
+        fields = ['name','category', 'description', 'price', 'image']
         widgets = {
             'name': forms.TextInput(attrs={
             'placeholder': "Название (максимальная длина 150 символов)"
         }),
         'category': forms.Select(attrs={'class': 'form-control'}),
-        'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
         'image': forms.FileInput(attrs={'class': 'form-control'})
         }
         labels = {
             'name': 'Название товара:',
             'category': 'Категория:',
-            'tags': 'Теги:',
             'description': 'Описание товара:',
             'image': 'Изображение товара'
         }
@@ -37,3 +43,13 @@ class ProductForm(forms.ModelForm):
             raise forms.ValidationError('Название не должно быть короче 3 символов!')
         
         return name
+    
+    def clean_tags_input(self):
+        """
+        Разбивает строку на список тегов:
+        - удаляет лишние пробелы вокруг
+        - приводит к нижнему регистру
+        """
+        tags_str = self.cleaned_data.get('tags_input')
+        tags = [tag.strip().lower() for tag in tags_str.split(',') if tag.strip()]
+        return tags
