@@ -1,6 +1,15 @@
 <div class="post-container" style="border: 1px solid black; margin-bottom: 10px; padding: 15px;">
   <h2>Название товара: <a href="{% url 'blog:product_detail' product_slug=product.slug %}">{{ product.name }}</a></h2>
   <p>Категория: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+
+  <p>Теги: 
+    {% for tag in product.tags.all %}
+      <a href="{{ tag.get_absolute_url }}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
+    {% empty %}
+      нет тегов
+    {% endfor %}
+  </p>
+
   <p>Описание товара: {{ product.description }}</p>
   <small>Дата создания объявления: {{ product.created_at|date:"d.m.Y H:i" }}</small>
 </div>

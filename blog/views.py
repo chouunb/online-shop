@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from unidecode import unidecode
 
-from blog.models import Product, Category
+from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
 
 
@@ -22,6 +22,17 @@ def get_category_products(request, category_slug):
     'products': products
     }
     return render(request, 'shop/pages/category_products.html', context)
+
+
+
+def get_tag_products(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    products = Product.objects.filter(tags=tag, status='published')
+
+    return render(request, 'shop/pages/tag_products.html', {
+        'tag': tag,
+        'products': products
+    })
 
 
 def get_product_detail(request, product_slug):
