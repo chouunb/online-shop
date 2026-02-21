@@ -7,17 +7,19 @@ from blog.models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name','category', 'description', 'price', 'image']
+        fields = ['name','category', 'tags', 'description', 'price', 'image']
         widgets = {
             'name': forms.TextInput(attrs={
             'placeholder': "Название (максимальная длина 150 символов)"
         }),
         'category': forms.Select(attrs={'class': 'form-control'}),
+        'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
         'image': forms.FileInput(attrs={'class': 'form-control'})
         }
         labels = {
             'name': 'Название товара:',
             'category': 'Категория:',
+            'tags': 'Теги:',
             'description': 'Описание товара:',
             'image': 'Изображение товара'
         }

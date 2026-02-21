@@ -52,6 +52,8 @@ def create_product(request):
             product.slug = slugify(unidecode(product.name))
             product.save()
 
+            form.save_m2m()
+
             return redirect('blog:product_detail', product_slug=product.slug)
     
     return render(request, 'shop/pages/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})

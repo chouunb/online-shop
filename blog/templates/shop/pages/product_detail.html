@@ -11,6 +11,15 @@
         Статус: {{ product.get_status_display }} 
     {% endif %}
     <p>Категория: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+
+    <p>Теги: 
+        {% for tag in product.tags.all %}
+            <a href="{{ tag.get_absolute_url }}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% empty %}
+            нет тегов
+        {% endfor %}
+    </p>
+
     {% if product.image %}
         <img src="{{ product.image.url }}" alt="Изображение товара">
     {% endif %}
