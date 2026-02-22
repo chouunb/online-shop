@@ -2,15 +2,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from unidecode import unidecode
+from django.views.generic import ListView
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
 
 
-def get_product_list(request):
-    products = Product.objects.filter(status="published")
-
-    return render(request, template_name='shop/pages/product_list.html', context={'products': products})
+class ProductListView(ListView):
+    template_name = 'shop/pages/product_list.html'
+    context_object_name = 'products'
+    queryset = Product.objects.filter(status="published")
 
 
 def get_category_products(request, category_slug):

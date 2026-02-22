@@ -5,7 +5,7 @@ from . import views
 app_name = 'blog'
 
 urlpatterns = [
-    path("products/", views.get_product_list, name='product_list'),
+    path("products/", views.ProductListView.as_view(), name='product_list'),
     path('products/category/<slug:category_slug>/', views.get_category_products, name="category_products"),
     path('products/tag/<slug:tag_slug>/', views.get_tag_products, name="tag_products"),
     path('products/add/', views.create_product, name='new_product'),
