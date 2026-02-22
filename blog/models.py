@@ -25,6 +25,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, verbose_name="Описание")
     price = models.IntegerField(verbose_name="Цена")
     image = models.ImageField(upload_to="product_images/", null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
