@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from unidecode import unidecode
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -14,7 +14,7 @@ class ProductListView(ListView):
     queryset = Product.objects.filter(status="published")
 
 
-class CategoryPostsView(ListView):
+class CategoryProductsView(ListView):
     template_name = 'shop/pages/category_products.html'
     context_object_name = 'products'
 
@@ -30,7 +30,7 @@ class CategoryPostsView(ListView):
         return context
 
 
-class TagPostsView(ListView):
+class TagProductsView(ListView):
     template_name = 'shop/pages/tag_products.html'
     context_object_name = 'products'
 
@@ -46,8 +46,10 @@ class TagPostsView(ListView):
         return context
 
 
-def get_product_detail(request, product_slug):
-    return render(request, 'shop/pages/product_detail.html', {"product": get_object_or_404(Product, slug=product_slug)})
+class ProductDetailView(DetailView):
+    model = Product
+    slug_url_kwarg = 'product_slug'
+    template_name = 'shop/pages/product_detail.html'
 
 @login_required
 def create_product(request):
