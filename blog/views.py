@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from unidecode import unidecode
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -51,30 +51,28 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = 'product_slug'
     template_name = 'shop/pages/product_detail.html'
 
-@login_required
-def create_product(request):
-    name = "Создать объявление"
-    submit_button_text = 'Создать'
 
-    form = ProductForm(request.POST or None, request.FILES or None)
+class CreateProductView(LoginRequiredMixin, CreateView):
+    form_class = ProductForm
+    template_name = 'shop/pages/product_form.html'
+    extra_context = {
+        'title': "Создать объявление",
+        'submit_button_text': "Создать"
+    }
 
-    if request.method == "POST":
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.seller = request.user
-            product.slug = slugify(unidecode(product.name))
-            product.save()
+    def form_valid(self, form):
+        product = form.save(commit=False)
+        product.seller = self.request.user
+        product.slug = slugify(unidecode(product.name))
+        product.save()
 
-            tags = form.cleaned_data.get('tags_input')
 
-            for tag_name in tags:
-                tag, _ = Tag.objects.get_or_create(name=tag_name)
-                product.tags.add(tag)
+        tags = form.cleaned_data.get('tags_input')
+        for tag_name in tags:
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            product.tags.add(tag)
 
-            return redirect('blog:product_detail', product_slug=product.slug)
-    
-    return render(request, 'shop/pages/product_form.html', {"form": form, 'name': name, 'submit_button_text': submit_button_text})
-
+        return redirect('blog:product_detail', product_slug=product.slug)
 
 
 def update_product(request, product_slug):
