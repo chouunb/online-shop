@@ -14,15 +14,20 @@ class ProductListView(ListView):
     queryset = Product.objects.filter(status="published")
 
 
-def get_category_products(request, category_slug):
-    category = get_object_or_404(Category, slug=category_slug)
-    products = Product.objects.filter(category=category, status='published')
-    
-    context = {
-    'category': category,
-    'products': products
-    }
-    return render(request, 'shop/pages/category_products.html', context)
+class CategoryPostsView(ListView):
+    template_name = 'shop/pages/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
+        return Product.objects.filter(category=self.category, status='published')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['category'] = self.category
+        
+        return context
 
 
 
