@@ -63,7 +63,6 @@ class CreateProductView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         product = form.save(commit=False)
         product.seller = self.request.user
-        product.slug = slugify(unidecode(product.name))
         product.save()
 
 

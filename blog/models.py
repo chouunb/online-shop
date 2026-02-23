@@ -30,6 +30,11 @@ class Product(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(unidecode(self.name))
+        
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "товар"
         verbose_name_plural = "товары"
