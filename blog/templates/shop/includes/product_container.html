@@ -11,5 +11,5 @@
   </p>
 
   <p>Описание товара: {{ product.description }}</p>
-  <small>Дата создания объявления: {{ product.created_at|date:"d.m.Y H:i" }}</small>
+  <small>Дата создания объявления: <span class="date-field">{{ product.created_at|date:"c" }}</span></small>
 </div>
