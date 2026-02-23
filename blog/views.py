@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.text import slugify
 from unidecode import unidecode
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.models import Product, Category, Tag
@@ -75,35 +75,33 @@ class CreateProductView(LoginRequiredMixin, CreateView):
         return redirect('blog:product_detail', product_slug=product.slug)
 
 
-def update_product(request, product_slug):
-    name = "Редактировать объявление"
-    submit_button_text = 'Сохранить'
+class ProductUpdateView(UpdateView):
+    model = Product
+    slug_url_kwarg = 'product_slug'
+    form_class = ProductForm
+    template_name = 'shop/pages/product_form.html'
 
-    product = get_object_or_404(Product, slug=product_slug)   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Редактировать объявление"
+        context['submit_button_text'] = "Сохранить"
+        context['form'].fields['tags_input'].initial = ", ".join(tag.name for tag in self.object.tags.all())
+        
+        return context
 
-    if (request.user != product.seller):
-        return render(request, 'shop/pages/not_allowed.html')
+    def form_valid(self, form):
+        if (self.request.user != self.object.seller):
+            return render(self.request, 'shop/pages/not_allowed.html')
 
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES, instance=product)
+        form.save()
 
-        if form.is_valid():
-            form.save()
+        tags = form.cleaned_data.get('tags_input', [])
+        self.object.tags.clear()
+        for tag_name in tags:
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            self.object.tags.add(tag)
 
-            tags = form.cleaned_data.get('tags_input')
-            product.tags.clear()
-            for tag_name in tags:
-                tag, _ = Tag.objects.get_or_create(name=tag_name)
-                product.tags.add(tag)
-
-            return redirect("blog:product_detail", product_slug=product.slug)
-        else:
-            return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
-
-    existing_tags = ", ".join(tag.name for tag in product.tags.all())
-    form = ProductForm(instance=product, initial={'tags_input': existing_tags})
-
-    return render(request, 'shop/pages/product_form.html', context={"form": form, 'name': name, 'submit_button_text': submit_button_text})
+        return redirect('blog:product_detail', product_slug = self.object.slug)
 
 
 def delete_product(request, product_slug):
