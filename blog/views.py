@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.text import slugify
 from unidecode import unidecode
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.models import Product, Category, Tag
@@ -103,17 +104,19 @@ class ProductUpdateView(UpdateView):
         return redirect('blog:product_detail', product_slug = self.object.slug)
 
 
-def delete_product(request, product_slug):
-    product = get_object_or_404(Product, slug=product_slug)
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    model = Product
+    slug_url_kwarg = 'product_slug'
+    template_name = 'shop/pages/confirm_product_delete.html'
+    success_url = reverse_lazy('blog:product_list')
 
-    if (request.user != product.seller):
-        return render(request, 'shop/pages/not_allowed.html')
-
-    if request.method == "POST":
-        product.delete()
-        return redirect("blog:product_list")
-
-    return render(request, 'shop/pages/confirm_product_delete.html', {'product': product})
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        if request.user != self.object.seller:
+            return render(request, 'shop/pages/not_allowed.html')
+        
+        return super().dispatch(request, *args, **kwargs)
 
 def main_page_view(request):
     return render(request, template_name='shop/pages/main_page.html')
