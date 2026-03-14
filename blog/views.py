@@ -12,7 +12,8 @@ from blog.forms import ProductForm
 class ProductListView(ListView):
     template_name = 'shop/pages/product_list.html'
     context_object_name = 'products'
-    queryset = Product.objects.filter(status="published")
+    queryset = Product.objects.filter(status="published").order_by('-created_at')
+    paginate_by = 6
 
 
 class CategoryProductsView(ListView):
