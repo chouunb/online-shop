@@ -6,7 +6,7 @@
   <h1>Поиск объявлений</h1>
 
   <form>
-    <input type="text" name="search" placeholder="Введите запрос" value="{{ request.GET.search }}">
+    <input autocomplete="off" spellcheck="false" type="text" name="search" placeholder="Введите запрос" value="{{ request.GET.search }}">
 
     <label>
       <input type="checkbox" name="search_category" {% if request.GET.search_category %}checked{% endif %}>
@@ -24,9 +24,13 @@
 
   {% if search_performed %}
     {% if products %}
+      <h2>Найдено {{ paginator.count }} объявление(-я, -й):</h2>
+
       {% for product in products %}
         {% include 'shop/includes/product_container.html' %}
       {% endfor %}
+
+      {% include "shop/includes/pagination.html" %}
     {% else %}
       <p>По вашему запросу ничего не найдено.</p>
     {% endif %}

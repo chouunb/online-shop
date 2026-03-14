@@ -20,6 +20,7 @@ class ProductListView(ListView):
 class ProductSearchView(ListView):
     template_name = "shop/pages/product_search.html"
     context_object_name = 'products'
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
