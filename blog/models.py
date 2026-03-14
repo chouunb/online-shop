@@ -29,6 +29,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
+    views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(unidecode(self.name))

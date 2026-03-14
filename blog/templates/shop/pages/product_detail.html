@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load bootstrap_icons %}
+
 {% block page_title %}{{ product.name }}{% endblock page_title %}
 
 {% block page_content %}
@@ -28,7 +30,10 @@
     <p>Дата создания объявления: <span class="date-field">{{ product.created_at|date:"c" }}</span></p>
     <p>Дата последнего изменения объявления: <span class="date-field">{{ product.updated_at|date:"c" }}</span></p>
 
-    <p>Продавец: <a href="{% url "users:profile" username=product.seller.username %}">{{ product.seller }}<a></p>
+    <p>
+        Продавец: <a href="{% url "users:profile" username=product.seller.username %}">{{ product.seller }}<a>
+        {% bs_icon 'eye' %} {{ product.views }}
+    </p>
 
     {% if request.user == product.seller %}
         <a href="{% url 'blog:edit_product' product.slug %}">Редактировать объявление</a>

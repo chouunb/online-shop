@@ -4,6 +4,7 @@ from unidecode import unidecode
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -52,6 +53,18 @@ class ProductDetailView(DetailView):
     model = Product
     slug_url_kwarg = 'product_slug'
     template_name = 'shop/pages/product_detail.html'
+
+
+    def get_object(self, queryset=None):
+        product = super().get_object(queryset)
+
+        session_key = f'product_{product.id}_viewed'
+        if not self.request.session.get(session_key, False) and product.seller != self.request.user:
+            Product.objects.filter(id=product.id).update(views=F("views") + 1)
+            product.views = product.views + 1
+            self.request.session[session_key] = True
+
+        return product
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):
