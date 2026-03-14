@@ -4,7 +4,7 @@ from unidecode import unidecode
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F
+from django.db.models import F, Q
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -15,6 +15,34 @@ class ProductListView(ListView):
     context_object_name = 'products'
     queryset = Product.objects.filter(status="published").order_by('-created_at')
     paginate_by = 6
+
+
+class ProductSearchView(ListView):
+    template_name = "shop/pages/product_search.html"
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_performed'] = any(self.request.GET.keys())
+        return context
+    
+    def get_queryset(self):
+        search_query = self.request.GET.get("search")
+
+        if search_query:
+            queryset = Product.objects.filter(status="published").order_by("-created_at")
+            query = Q(name__icontains=search_query) | Q(description__icontains=search_query)
+
+            search_category = self.request.GET.get("search_category")
+            search_tag = self.request.GET.get("search_tag")
+            if search_category:
+                query |= Q(category__name__icontains=search_query)
+            if search_tag:
+                query |= Q(tags__name__icontains=search_query)
+
+            return queryset.filter(query)
+        
+        return Product.objects.none()
 
 
 class CategoryProductsView(ListView):
