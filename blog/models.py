@@ -30,6 +30,7 @@ class Product(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
     views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
+    viewed_users = models.ManyToManyField(User, blank=True, related_name='viewed_products', verbose_name="Просмотрено пользователями")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(unidecode(self.name))

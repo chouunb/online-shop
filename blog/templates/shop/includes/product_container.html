@@ -1,5 +1,10 @@
 <div class="post-container" style="border: 1px solid black; margin-bottom: 10px; padding: 15px;">
   <h2>Название товара: <a href="{% url 'blog:product_detail' product_slug=product.slug %}">{{ product.name }}</a></h2>
+    {% if request.user in product.viewed_users.all %}
+    <div class="badge bg-primary">
+      Просмотрено
+    </div>
+  {% endif %}
   <p>Категория: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
 
   <p>Теги: 

@@ -58,11 +58,15 @@ class ProductDetailView(DetailView):
     def get_object(self, queryset=None):
         product = super().get_object(queryset)
 
+        user = self.request.user
         session_key = f'product_{product.id}_viewed'
-        if not self.request.session.get(session_key, False) and product.seller != self.request.user:
+        if not self.request.session.get(session_key, False) and product.seller != user:
             Product.objects.filter(id=product.id).update(views=F("views") + 1)
             product.views = product.views + 1
             self.request.session[session_key] = True
+
+        if user.is_authenticated and user != product.seller and not product.viewed_users.filter(id=user.id).exists():
+            product.viewed_users.add(user)
 
         return product
 
