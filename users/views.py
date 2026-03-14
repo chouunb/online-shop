@@ -1,15 +1,15 @@
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic.list import MultipleObjectMixin
 
 from django.conf import settings
 
 User = get_user_model()
 
-
+    
 class RegisterView(CreateView):
     template_name = 'users/pages/register.html'
     form_class = UserCreationForm
@@ -31,15 +31,19 @@ class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('blog:product_list')
 
 
-class ProfileView(DetailView):
+class ProfileView(DetailView, MultipleObjectMixin):
     model = User
     slug_url_kwarg = 'username'
     slug_field = 'username'
     template_name = 'users/pages/profile.html'
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        products = self.object.products.order_by('-created_at')
 
-        context['products'] = self.object.products.order_by('-created_at')
+        context = super().get_context_data(object_list=products, **kwargs)
+        
+        context['products'] = context['object_list']
+        del context['object_list']
 
         return context
