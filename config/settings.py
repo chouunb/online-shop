@@ -127,5 +127,14 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
 
+# Конфигурация для логина
+
 LOGIN_URL = 'users:login'
 DEFAULT_LOGIN_REDIRECT_URL = 'users:profile'
+
+
+# Аутентификация по Email'у
+
+AUTHENTICATION_BACKENDS = [
+    'users.auth_backend.EmailOrUsernameBackend'
+]
