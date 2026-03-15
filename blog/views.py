@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, Q
+from django.http import JsonResponse
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -98,6 +99,21 @@ class ProductDetailView(DetailView):
             product.viewed_users.add(user)
 
         return product
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+        product = self.object
+
+        context['is_saved'] = False
+        
+        if user.is_authenticated:
+            context['is_saved'] = product.saved_users.filter(id=user.id).exists()
+
+        context['saves_count'] = product.saved_users.count()
+
+        return context
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):
@@ -168,3 +184,24 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
 class MainPageView(TemplateView):
     template_name = 'shop/pages/main_page.html'
+
+
+def product_save_toggle_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+
+    has_saved = product.saved_users.filter(id=user.id).exists()
+
+    if has_saved:
+        product.saved_users.remove(user)
+        has_saved = False
+    else:
+        product.saved_users.add(user)
+        has_saved = True
+
+    saved_count = product.saved_users.count()
+
+    return JsonResponse({
+        'saved_count': saved_count,
+        'has_saved': has_saved
+    })

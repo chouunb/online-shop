@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% load bootstrap_icons %}
+{% load static %}
 
 {% block page_title %}{{ product.name }}{% endblock page_title %}
+
+{% block scripts %}
+    <script src="{% static "shop/js/reactions.js" %}" type="module" defer></script>
+{% endblock scripts %}
 
 {% block page_content %}
     <a href="{% url 'blog:product_list' %}">&larr;Назад</a>
@@ -29,6 +34,21 @@
     <p>{{ product.price }}</p>
     <p>Дата создания объявления: <span class="date-field">{{ product.created_at|date:"c" }}</span></p>
     <p>Дата последнего изменения объявления: <span class="date-field">{{ product.updated_at|date:"c" }}</span></p>
+
+<div
+    id="productSaves" 
+    data-is-authenticated="{% if request.user.is_authenticated %}true{% else %}false{% endif %}"
+    data-login-url="{% url 'users:login' %}"
+>
+    <button
+        id="saveBtn"
+        class="btn btn-sm {% if is_saved %}btn-warning{% else %}btn-outline-warning{% endif %} {% if request.user == product.seller %}disabled{% endif %} js-save-btn"
+        data-url="{% url 'blog:product_save' product.id %}"
+    >
+        <i class="bi bi-bookmark{% if is_saved %}-fill{% endif %}"></i>
+        <span id="savesCount">{{ saves_count }}</span>
+    </button>
+</div>
 
     <p>
         Продавец: <a href="{% url "users:profile" username=product.seller.username %}">{{ product.seller }}<a>
