@@ -25,10 +25,11 @@
   {% if search_performed %}
     {% if products %}
       <h2>Найдено {{ paginator.count }} объявление(-я, -й):</h2>
-
-      {% for product in products %}
-        {% include 'shop/includes/product_container.html' %}
-      {% endfor %}
+      <div class="products-grid">
+        {% for product in products %}
+          {% include 'shop/includes/product_container.html' %}
+        {% endfor %}
+      </div>
 
       {% include "shop/includes/pagination.html" %}
     {% else %}

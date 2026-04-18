@@ -1,16 +1,23 @@
 {% extends "base.html" %}
-{% block page_title %}Все товары{% endblock page_title %}
+
+{% block page_title %}Все товары{% endblock %}
 
 {% block page_content %}
     <h1>Все товары</h1>
 
     {% if products %}
+
+    <div class="products-grid">
+
         {% for product in products %}
             {% include 'shop/includes/product_container.html' %}
         {% endfor %}
+
+    </div>
+
     {% else %}
         <p>Товаров ещё нет. Загляните позже!</p>
     {% endif %}
-
-    {% include "shop/includes/pagination.html" %}
+    
+    {% include "shop/includes/pagination.html" %} 
 {% endblock page_content %}

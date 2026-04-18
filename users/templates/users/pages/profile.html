@@ -9,15 +9,17 @@
     <h1>Профиль пользователя {{ user }}</h1>
   {% endif %}
 
-  {% if products %}
-    {% for product in products %}
-      {% if user == request.user or product.status != 'draft' %}
-        {% include 'shop/includes/product_container.html' %}
-      {% endif %}
-    {% endfor %}
-  {% else %}
-    <p>Объявлений ещё нет. Загляните позже!</p>
-  {% endif %}
+  <div class="products-grid">
+    {% if products %}
+      {% for product in products %}
+        {% if user == request.user or product.status != 'draft' %}
+          {% include 'shop/includes/product_container.html' %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p>Объявлений ещё нет. Загляните позже!</p>
+    {% endif %}
+  </div>
 
   {% include "shop/includes/pagination.html" %}
 {% endblock page_content %}

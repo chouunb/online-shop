@@ -1,20 +1,54 @@
-<div class="post-container" style="border: 1px solid black; margin-bottom: 10px; padding: 15px;">
-  <h2>Название товара: <a href="{% url 'blog:product_detail' product_slug=product.slug %}">{{ product.name }}</a></h2>
-    {% if request.user in product.viewed_users.all %}
-    <div class="badge bg-primary">
-      Просмотрено
+{% load static %}
+<link rel="stylesheet" href="{% static 'shop/css/includes/product_container.css' %}">
+
+
+    <div class="product-card">
+
+        <!-- Фото -->
+        <div class="product-image">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/300x220" alt="Нет фото">
+            {% endif %}
+        </div>
+
+        <!-- Контент -->
+        <div class="product-content">
+
+            <h3 class="product-title">
+                <a href="{% url 'blog:product_detail' product_slug=product.slug %}">
+                    {{ product.name }}
+                </a>
+            </h3>
+
+            <p class="product-price">
+                {{ product.price }} ₽
+            </p>
+
+            <p class="product-category">
+                Категория:
+                <a href="{{ product.category.get_absolute_url }}">
+                    {{ product.category.name }}
+                </a>
+            </p>
+
+            <p class="product-tags">
+                {% for tag in product.tags.all %}
+                    #{{ tag.name }}
+                {% empty %}
+                    нет тегов
+                {% endfor %}
+            </p>
+            
+            {% if request.user in product.viewed_users.all %}
+                <div class="viewed-badge">Просмотрено</div>
+            {% endif %}
+
+            <small class="product-date">
+                {{ product.created_at|date:"d.m.Y" }}
+            </small>
+
+        </div>
+
     </div>
-  {% endif %}
-  <p>Категория: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
-
-  <p>Теги: 
-    {% for tag in product.tags.all %}
-      <a href="{{ tag.get_absolute_url }}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
-    {% empty %}
-      нет тегов
-    {% endfor %}
-  </p>
-
-  <p>Описание товара: {{ product.description }}</p>
-  <small>Дата создания объявления: <span class="date-field">{{ product.created_at|date:"c" }}</span></small>
-</div>

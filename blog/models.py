@@ -24,7 +24,7 @@ class Product(models.Model):
     tags = models.ManyToManyField("Tag", related_name='products', blank=True, verbose_name='Теги')
     description = models.TextField(blank=True, verbose_name="Описание")
     price = models.IntegerField(verbose_name="Цена")
-    image = models.ImageField(upload_to="product_images/", null=True, blank=True)
+    image = models.ImageField(upload_to="product_images/")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
