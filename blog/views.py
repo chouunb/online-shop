@@ -186,7 +186,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class MainPageView(TemplateView):
-    template_name = 'shop/pages/main_page.html'
+    template_name = 'shop/pages/index.html'
 
 
 def product_save_toggle_view(request, product_id):
