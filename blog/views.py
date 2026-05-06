@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, Q
 from django.contrib import messages
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 from blog.models import Product, Category, Tag
 from blog.forms import ProductForm
@@ -15,8 +16,40 @@ from blog.forms import ProductForm
 class ProductListView(ListView):
     template_name = 'shop/pages/product_list.html'
     context_object_name = 'products'
-    queryset = Product.objects.filter(status="published").order_by('-created_at')
-    paginate_by = 6
+    products_per_batch = 6
+
+    def get_queryset(self):
+        self.products_query = Product.objects.filter(status="published").order_by('-created_at')
+        return self.products_query[:self.products_per_batch]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+
+        context["has_more_products"] = self.products_query.count() > self.products_per_batch
+        context["products_per_batch"] = self.products_per_batch
+
+        return context
+
+
+def load_more_products_view(request):
+    offset = int(request.GET.get("offset", 0))
+    products_per_batch = ProductListView.products_per_batch
+
+    products_query = Product.objects.filter(status="published").order_by('-created_at')
+    products = products_query[offset:offset + products_per_batch]
+
+    products_html_string = ''.join([
+        render_to_string("shop/includes/product_container.html", {"product": product}, request)
+        for product in products
+    ])
+
+    has_more_products = offset + products_per_batch < products_query.count()
+
+    return JsonResponse({
+        'html': products_html_string,
+        'has_more': has_more_products
+    })
 
 
 class ProductSearchView(ListView):

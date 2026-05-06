@@ -1,13 +1,30 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block page_title %}Все товары{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static "blog/css/includes/product_container.css" %}">
+{% endblock styles %}
+
+{% block scripts %}
+<script type="module" src="{% static 'shop/js/pages/product_list.js' %}"></script>
+{% endblock %}
+
 
 {% block page_content %}
     <h1>Все товары</h1>
 
     {% if products %}
 
-    <div class="products-grid">
+    <div 
+        id="productsContainer"
+        class="products-grid"
+        data-initial-offset="{{ products|length }}"
+        data-has-more="{{ has_more_products|yesno:'true,false' }}"
+        data-batch-size="{{ products_per_batch }}"
+        data-load-more-url="{% url 'blog:load_more_products' %}"
+    >
 
         {% for product in products %}
             {% include 'shop/includes/product_container.html' %}
@@ -18,6 +35,13 @@
     {% else %}
         <p>Товаров ещё нет. Загляните позже!</p>
     {% endif %}
-    
-    {% include "shop/includes/pagination.html" %} 
+
+
+    {% if has_more_products %}
+        <div id="loadingSpinner" class="text-center d-none">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+        </div>
+    {% endif %}
 {% endblock page_content %}

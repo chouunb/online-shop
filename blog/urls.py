@@ -6,6 +6,7 @@ app_name = 'blog'
 
 urlpatterns = [
     path("products/", views.ProductListView.as_view(), name='product_list'),
+    path("products/load-more/", views.load_more_products_view, name="load_more_products"),
     path("products/search/", views.ProductSearchView.as_view(), name="product_search"),
     path('products/category/<slug:category_slug>/', views.CategoryProductsView.as_view(), name="category_products"),
     path('products/tag/<slug:tag_slug>/', views.TagProductsView.as_view(), name="tag_products"),
