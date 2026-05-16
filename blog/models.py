@@ -31,12 +31,6 @@ class Product(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
     views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
     viewed_users = models.ManyToManyField(User, blank=True, related_name='viewed_products', verbose_name="Просмотрено пользователями")
-    saved_users = models.ManyToManyField(
-        User,
-        related_name="saved_products",
-        blank=True,
-        verbose_name="Избранное"
-        )
 
     def save(self, *args, **kwargs):
         self.slug = slugify(unidecode(self.name))
@@ -92,3 +86,21 @@ class Tag(models.Model):
         verbose_name = 'Тег'
         verbose_name_plural = "Теги"
         db_table = "shop_tags"
+
+class CartItem(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='cart_items'
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='cart_items'
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('user', 'product')

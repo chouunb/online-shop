@@ -1,6 +1,11 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block page_title %} {{ block.super }} | Поиск объявлений {% endblock page_title %}
+
+{% block scripts %}
+  <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
+{% endblock scripts %}
 
 {% block page_content %}
   <h1>Поиск объявлений</h1>

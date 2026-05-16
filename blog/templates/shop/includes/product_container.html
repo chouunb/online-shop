@@ -1,4 +1,6 @@
 {% load static %}
+{% comment %} {% load custom_filters %} {% endcomment %}
+
 <link rel="stylesheet" href="{% static 'shop/css/includes/product_container.css' %}">
 
 
@@ -49,6 +51,32 @@
                 {{ product.created_at|date:"d.m.Y" }}
             </small>
 
+
+            {% if request.user != product.seller %}
+
+                <button
+                    class="btn btn-primary add-to-cart-btn"
+                    data-product-id="{{ product.id }}"
+                    data-is-authenticated="{% if request.user.is_authenticated %}true{% else %}false{% endif %}"
+                    data-login-url="{% url 'users:login' %}"
+                >
+
+                {% if product.user_cart_items %}
+
+                    В корзине ({{ product.user_cart_items.0.quantity }})
+
+                {% else %}
+
+                    Добавить в корзину
+
+                {% endif %}
+
+                </button>
+
+            {% endif %}
+
+
         </div>
 
     </div>
+

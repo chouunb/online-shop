@@ -1,11 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, ListView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+from blog.models import CartItem
 from django.conf import settings
 from users.forms import CustomAuthenticationForm
 
@@ -54,3 +56,14 @@ class ProfileView(DetailView, MultipleObjectMixin):
         del context['object_list']
 
         return context
+    
+
+
+class CartProductsView(LoginRequiredMixin, ListView):
+    template_name = 'users/pages/cart.html'
+    context_object_name = 'cart_items'
+
+    def get_queryset(self):
+        return CartItem.objects.filter(
+            user=self.request.user
+        ).select_related('product')

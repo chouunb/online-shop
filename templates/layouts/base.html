@@ -39,12 +39,15 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'product_search' %}active{% endif %}" href="{% url 'blog:product_search' %}">Поиск объявлений</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}" href="{% url 'users:cart' %}">Корзина</a>
+                            </li>
                         </ul>
                         <ul class="navbar-nav">
                             {% if request.user.is_authenticated %}
                                 <li class="nav-item">
                                     <a class="nav-link {% if request.resolver_match.url_name == 'profile' and request.resolver_match.kwargs.username == request.user.username %}active{% endif %}" href="{% url "users:profile" request.user.username %}">
-                                        {% bs_icon 'person-circle' extra_classes='me-1' %}{{ request.user }}
+                                        {% bs_icon 'person-circle' extra_classes='me-1' %}Профиль
                                     </a>
                                 </li>
                                 <li class="nav-item">

@@ -9,7 +9,9 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
-from blog.models import Product, Category, Tag
+from django.views.decorators.http import require_POST
+from django.db.models import Prefetch
+from blog.models import Product, Category, Tag, CartItem
 from blog.forms import ProductForm
 
 
@@ -19,17 +21,38 @@ class ProductListView(ListView):
     products_per_batch = 6
 
     def get_queryset(self):
-        self.products_query = Product.objects.filter(status="published").order_by('-created_at')
+
+        queryset = Product.objects.filter(
+            status="published"
+        )
+
+        if self.request.user.is_authenticated:
+
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'cart_items',
+                    queryset=CartItem.objects.filter(
+                        user=self.request.user
+                    ),
+                    to_attr='user_cart_items'
+                )
+            )
+
+        self.products_query = queryset.order_by('-created_at')
+
         return self.products_query[:self.products_per_batch]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context["has_more_products"] = (
+            self.products_query.count() > self.products_per_batch
+        )
 
-        context["has_more_products"] = self.products_query.count() > self.products_per_batch
         context["products_per_batch"] = self.products_per_batch
 
         return context
+
 
 
 def load_more_products_view(request):
@@ -61,24 +84,43 @@ class ProductSearchView(ListView):
         context = super().get_context_data(**kwargs)
         context['search_performed'] = any(self.request.GET.keys())
         return context
-    
+
     def get_queryset(self):
         search_query = self.request.GET.get("search")
 
+        queryset = Product.objects.filter(
+            status="published"
+        )
+        if self.request.user.is_authenticated:
+
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'cart_items',
+                    queryset=CartItem.objects.filter(
+                        user=self.request.user
+                    ),
+                    to_attr='user_cart_items'
+                )
+            )
+
         if search_query:
-            queryset = Product.objects.filter(status="published").order_by("-created_at")
-            query = Q(name__icontains=search_query) | Q(description__icontains=search_query)
+            query = (
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
 
             search_category = self.request.GET.get("search_category")
             search_tag = self.request.GET.get("search_tag")
+
             if search_category:
                 query |= Q(category__name__icontains=search_query)
+
             if search_tag:
                 query |= Q(tags__name__icontains=search_query)
 
             return queryset.filter(query)
-        
-        return Product.objects.none()
+
+        return queryset.none()
 
 
 class CategoryProductsView(ListView):
@@ -140,12 +182,19 @@ class ProductDetailView(DetailView):
         user = self.request.user
         product = self.object
 
-        context['is_saved'] = False
-        
-        if user.is_authenticated:
-            context['is_saved'] = product.saved_users.filter(id=user.id).exists()
+        context['in_cart'] = False
+        context['cart_quantity'] = 0
 
-        context['saves_count'] = product.saved_users.count()
+        if user.is_authenticated:
+
+            cart_item = CartItem.objects.filter(
+                user=user,
+                product=product
+            ).first()
+
+            if cart_item:
+                context['in_cart'] = True
+                context['cart_quantity'] = cart_item.quantity
 
         return context
 
@@ -222,22 +271,90 @@ class MainPageView(TemplateView):
     template_name = 'shop/pages/index.html'
 
 
-def product_save_toggle_view(request, product_id):
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+@login_required
+def add_to_cart_view(request, product_id):
+
+    if request.method != 'POST':
+        return JsonResponse({
+            'error': 'Только POST запрос'
+        }, status=400)
+
     product = get_object_or_404(Product, id=product_id)
-    user = request.user
 
-    has_saved = product.saved_users.filter(id=user.id).exists()
+    # Нельзя добавлять свой товар
+    if product.seller == request.user:
+        return JsonResponse({
+            'error': 'Нельзя добавить свой товар в корзину'
+        }, status=403)
 
-    if has_saved:
-        product.saved_users.remove(user)
-        has_saved = False
-    else:
-        product.saved_users.add(user)
-        has_saved = True
+    cart_item, created = CartItem.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
 
-    saved_count = product.saved_users.count()
+    # Если товар уже есть — увеличиваем количество
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
 
     return JsonResponse({
-        'saved_count': saved_count,
-        'has_saved': has_saved
+        'success': True,
+        'quantity': cart_item.quantity,
+        'product_id': product.id
+    })
+
+
+@login_required
+def remove_from_cart_view(request, product_id):
+
+    if request.method != 'POST':
+        return JsonResponse({
+            'error': 'Только POST запрос'
+        }, status=400)
+
+    product = get_object_or_404(Product, id=product_id)
+
+    cart_item = get_object_or_404(
+        CartItem,
+        user=request.user,
+        product=product
+    )
+
+    # Уменьшаем количество
+    if cart_item.quantity > 1:
+
+        cart_item.quantity -= 1
+        cart_item.save()
+
+        quantity = cart_item.quantity
+
+    else:
+        cart_item.delete()
+
+        quantity = 0
+
+    return JsonResponse({
+        'success': True,
+        'quantity': quantity,
+        'product_id': product.id
+    })
+
+@require_POST
+@login_required
+def delete_cart_item_view(request, product_id):
+
+    cart_item = get_object_or_404(
+        CartItem,
+        user=request.user,
+        product_id=product_id
+    )
+
+    cart_item.delete()
+
+    return JsonResponse({
+        'success': True
     })

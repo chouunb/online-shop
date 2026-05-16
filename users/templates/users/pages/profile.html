@@ -1,14 +1,23 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block page_title %}Профиль{% endblock page_title %}
+
+{% block scripts %}
+  <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
+{% endblock scripts %}
+
 
 {% block page_content %}
   {% if user == request.user %}
     <h1>Мой профиль</h1>
+    <a href="{% url 'users:cart' %}" class="btn btn-outline-primary">
+      Посмотреть корзину
+    </a>
+
   {% else %}
     <h1>Профиль пользователя {{ user }}</h1>
   {% endif %}
-
   <div class="products-grid">
     {% if products %}
       {% for product in products %}
