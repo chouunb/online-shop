@@ -159,6 +159,7 @@ class ProductDetailView(DetailView):
     model = Product
     slug_url_kwarg = 'product_slug'
     template_name = 'shop/pages/product_detail.html'
+    reviews_per_batch = 3
 
 
     def get_object(self, queryset=None):
@@ -195,6 +196,13 @@ class ProductDetailView(DetailView):
             if cart_item:
                 context['in_cart'] = True
                 context['cart_quantity'] = cart_item.quantity
+
+            reviews_query = product.reviews.all().order_by('-created_at')
+            context["reviews"] = reviews_query[:self.reviews_per_batch]
+            context["has_more_reviews"] = (
+                reviews_query.count() > self.reviews_per_batch
+            )
+            context["reviews_per_batch"] = self.reviews_per_batch
 
         return context
 
@@ -399,4 +407,49 @@ def add_review_view(request, product_id):
         'success': True,
         'review_html': review_html,
         'reviews_count': product.reviews.count()
+    })
+
+
+def load_more_reviews_view(request, product_id):
+
+    from time import sleep
+    sleep(0.5)
+
+    offset = int(request.GET.get("offset"))
+
+    reviews_per_batch = (
+        ProductDetailView.reviews_per_batch
+    )
+
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
+    reviews_query = (
+        product.reviews.all()
+        .order_by('-created_at')
+    )
+
+    reviews = reviews_query[
+        offset:offset + reviews_per_batch
+    ]
+
+    reviews_html = ''.join([
+        render_to_string(
+            "shop/includes/review_container.html",
+            {"review": review},
+            request
+        )
+        for review in reviews
+    ])
+
+    has_more_reviews = (
+        offset + reviews_per_batch
+        < reviews_query.count()
+    )
+
+    return JsonResponse({
+        'html': reviews_html,
+        'has_more': has_more_reviews
     })

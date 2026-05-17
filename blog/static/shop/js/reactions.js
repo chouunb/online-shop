@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateElement =
           newReviewElement.querySelector('.date-field');
 
+        // УВЕЛИЧИВАЕМ offset на 1, так как добавили новый отзыв
+        window.reviewsBatchLoader.offset += 1;
+
         if (dateElement) {
           formatDate(dateElement);
         }

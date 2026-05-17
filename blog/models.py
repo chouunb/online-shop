@@ -126,7 +126,6 @@ class Review(models.Model):
         return f'Отзыв от {self.author} к товару "{self.product}": {short_text}'
 
     class Meta:
-        ordering = ['-created_at']
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         db_table = 'shop_reviews'
