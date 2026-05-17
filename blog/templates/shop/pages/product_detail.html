@@ -33,9 +33,7 @@
     {% endif %}
     <p>{{ product.description }}</p>
     <p>{{ product.price }}</p>
-    <p>Дата создания объявления: <span class="date-field">{{ product.created_at|date:"c" }}</span></p>
-    <p>Дата последнего изменения объявления: <span class="date-field">{{ product.updated_at|date:"c" }}</span></p>
-
+    <span class="date-field" data-date="{{ product.created_at|date:'c' }}"></span>
 
     <p>
         Продавец: <a href="{% url "users:profile" username=product.seller.username %}">{{ product.seller }}</a>
