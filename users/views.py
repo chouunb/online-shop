@@ -46,6 +46,7 @@ class ProfileView(DetailView, MultipleObjectMixin):
     slug_field = 'username'
     template_name = 'users/pages/profile.html'
     paginate_by = 4
+    context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
         products = self.object.products.order_by('-created_at')
