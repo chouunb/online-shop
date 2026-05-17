@@ -55,7 +55,7 @@
             {% if request.user != product.seller %}
 
                 <button
-                    class="btn btn-primary add-to-cart-btn"
+                    class="btn btn-success add-to-cart-btn"
                     data-product-id="{{ product.id }}"
                     data-is-authenticated="{% if request.user.is_authenticated %}true{% else %}false{% endif %}"
                     data-login-url="{% url 'users:login' %}"

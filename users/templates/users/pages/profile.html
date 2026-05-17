@@ -11,7 +11,7 @@
 {% block page_content %}
   {% if user == request.user %}
     <h1>Мой профиль</h1>
-    <a href="{% url 'users:cart' %}" class="btn btn-outline-primary">
+    <a href="{% url 'users:cart' %}" class="btn btn-success">
       Посмотреть корзину
     </a>
 
@@ -29,6 +29,10 @@
       <p>Объявлений ещё нет. Загляните позже!</p>
     {% endif %}
   </div>
+    <form class='nav-link' method="POST" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Выйти из аккаута</button>
+    </form>
 
   {% include "shop/includes/pagination.html" %}
 {% endblock page_content %}
