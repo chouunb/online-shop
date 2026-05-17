@@ -9,14 +9,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.models import CartItem
 from django.conf import settings
-from users.forms import CustomAuthenticationForm
+from users.forms import CustomAuthenticationForm, CustomUserCreationForm
 
 User = get_user_model()
 
     
 class RegisterView(CreateView):
     template_name = 'users/pages/register.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('users:login')
 
 
