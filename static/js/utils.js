@@ -2,13 +2,19 @@ function getCookie(cookieKey) {
   let cookieValue = null;
 
   if (document.cookie && document.cookie !== "") {
+
     const cookies = document.cookie.split(';');
-    
+
     for (let cookie of cookies) {
+
       cookie = cookie.trim();
 
       if (cookie.startsWith(cookieKey + "=")) {
-        cookieValue = decodeURIComponent(cookie.substring(cookieKey.length + 1));
+
+        cookieValue = decodeURIComponent(
+          cookie.substring(cookieKey.length + 1)
+        );
+
         break;
       }
     }
@@ -19,10 +25,11 @@ function getCookie(cookieKey) {
 
 
 export async function getAction(url) {
+
   const response = await fetch(url);
 
   if (!response.ok) {
-    console.error("Request failed", response.status)
+    console.error("Request failed", response.status);
     return null;
   }
 
@@ -30,16 +37,23 @@ export async function getAction(url) {
 }
 
 
-export async function postAction(url) {
-  const response = await fetch(url, {
+export async function postAction(url, formData = null) {
+
+  const config = {
     method: "POST",
     headers: {
       'X-CSRFToken': getCookie('csrftoken')
     }
-  });
+  };
+
+  if (formData) {
+    config.body = formData;
+  }
+
+  const response = await fetch(url, config);
 
   if (!response.ok) {
-    console.error("Request failed", response.status)
+    console.error("Request failed", response.status);
     return null;
   }
 

@@ -1,0 +1,40 @@
+<div class="card mb-3">
+  <div class="card-body">
+
+    <div class="d-flex justify-content-between">
+
+      <div>
+        <h6 class="card-title mb-1">
+          <a
+            href="{% url 'users:profile' review.author.username %}"
+            class="text-decoration-none"
+          >
+            {{ review.author.username }}
+          </a>
+        </h6>
+
+        <div class="text-warning">
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}
+              ★
+            {% else %}
+              ☆
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <small
+        class="text-muted date-field"
+        data-date="{{ review.created_at|date:'c' }}"
+      >
+      </small>
+
+    </div>
+
+    <p class="card-text mt-3 mb-0">
+      {{ review.text }}
+    </p>
+
+  </div>
+</div>

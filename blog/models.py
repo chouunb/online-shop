@@ -104,3 +104,29 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+
+class Review(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="reviews"
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reviews"
+    )
+    text = models.TextField()
+    rating = models.PositiveSmallIntegerField(default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        short_text = self.text if len(self.text) < 20 else self.text[:20] + "..."
+        return f'Отзыв от {self.author} к товару "{self.product}": {short_text}'
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        db_table = 'shop_reviews'

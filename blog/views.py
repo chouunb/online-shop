@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
-from blog.models import Product, Category, Tag, CartItem
+from blog.models import Product, Category, Tag, CartItem, Review
 from blog.forms import ProductForm
 
 
@@ -357,4 +357,46 @@ def delete_cart_item_view(request, product_id):
 
     return JsonResponse({
         'success': True
+    })
+
+
+@login_required
+@require_POST
+def add_review_view(request, product_id):
+
+    text = request.POST.get('text', '').strip()
+    rating = int(request.POST.get('rating', 5))
+
+    if not text:
+        return JsonResponse({
+            'success': False,
+            'error': 'Текст отзыва не может быть пустым'
+        })
+
+    product = get_object_or_404(Product, id=product_id)
+
+    # Нельзя оставлять отзыв на свой товар
+    if product.seller == request.user:
+        return JsonResponse({
+            'success': False,
+            'error': 'Нельзя оставлять отзыв на свой товар'
+        }, status=403)
+
+    review = Review.objects.create(
+        product=product,
+        author=request.user,
+        text=text,
+        rating=rating
+    )
+
+    review_html = render_to_string(
+        'shop/includes/review_container.html',
+        {'review': review},
+        request=request
+    )
+
+    return JsonResponse({
+        'success': True,
+        'review_html': review_html,
+        'reviews_count': product.reviews.count()
     })

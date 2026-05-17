@@ -1,33 +1,85 @@
 import { postAction } from "../../../../static/js/utils.js";
+import { formatDate } from "../../../../static/js/format-dates.js";
 
-const productSavesElement = document.querySelector("#productSaves");
+document.addEventListener('DOMContentLoaded', () => {
 
-productSavesElement.addEventListener("click", async (event) => {
-  const btnElement = event.target.closest(".js-save-btn");
+  const reviewFormElement = document.getElementById('reviewForm');
 
-  if (!btnElement) return;
+  if (!reviewFormElement) return;
 
-  const isAuthenticated = productSavesElement.dataset.isAuthenticated === "true";
-  if (!isAuthenticated) {
-    window.location.href = productSavesElement.dataset.loginUrl;
-    return;
-  }
+  reviewFormElement.addEventListener('submit', async function(event) {
+    event.preventDefault();
 
-  const url = btnElement.dataset.url;
-  const data = await postAction(url);
+    const formData = new FormData(this);
+    const url = this.dataset.addReviewUrl;
 
-  if (!data) return;
+    const reviewErrorsElement =
+      document.getElementById('reviewErrors');
 
-  document.querySelector("#savesCount").textContent = data.saved_count;
+    reviewErrorsElement.classList.add('d-none');
+    reviewErrorsElement.textContent = '';
 
-  const saveBtnElement = document.querySelector("#saveBtn");
-  const saveIconElement = saveBtnElement.querySelector("i");
+    try {
+      const data = await postAction(url, formData);
 
-  if (data.has_saved) {
-    saveBtnElement.classList.replace("btn-outline-warning", "btn-warning");
-    saveIconElement.classList.replace("bi-bookmark", "bi-bookmark-fill");
-  } else {
-    saveBtnElement.classList.replace("btn-warning", "btn-outline-warning");
-    saveIconElement.classList.replace("bi-bookmark-fill", "bi-bookmark");
-  }
+      if (!data) {
+        reviewErrorsElement.textContent =
+          'Ошибка сервера';
+
+        reviewErrorsElement.classList.remove('d-none');
+
+        return;
+      }
+      if (data.success) {
+
+        this.querySelector('textarea').value = '';
+
+        const reviewsListElement =
+          document.getElementById('reviewsList');
+
+        const emptyMessageElement =
+          reviewsListElement.querySelector('#emptyMessage');
+
+        if (emptyMessageElement) {
+          emptyMessageElement.remove();
+        }
+
+        reviewsListElement.insertAdjacentHTML(
+          'afterbegin',
+          data.review_html
+        );
+
+        const newReviewElement =
+          reviewsListElement.firstElementChild;
+
+        const dateElement =
+          newReviewElement.querySelector('.date-field');
+
+        if (dateElement) {
+          formatDate(dateElement);
+        }
+
+        const reviewsTitleElement =
+          document.querySelector('#reviewsTitle');
+
+        reviewsTitleElement.textContent =
+          `Отзывы (${data.reviews_count})`;
+
+      } else {
+
+        reviewErrorsElement.textContent = data.error;
+        reviewErrorsElement.classList.remove('d-none');
+
+      }
+
+    } catch (error) {
+
+      console.error('Ошибка при добавлении отзыва:', error);
+
+      reviewErrorsElement.textContent =
+        'Произошла ошибка при отправке отзыва';
+
+      reviewErrorsElement.classList.remove('d-none');
+    }
+  });
 });
