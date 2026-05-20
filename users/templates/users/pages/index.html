@@ -1,7 +1,7 @@
 {% extends "users/layouts/profile_base.html" %}
 {% load static %}
 
-{% block page_title %}Профиль{% endblock page_title %}
+{% block page_title %}{{ block.super }} | Магазин{% endblock page_title %}
 
 {% block styles %}
   {{ block.super }}
