@@ -45,6 +45,14 @@
               <i class="bi bi-cart3 me-2"></i>Корзина
             </a>
           </li>
+          <li>
+            <a
+              href="{% url 'users:password_change' %}"
+              class="{% if request.resolver_match.url_name == 'password_change' %}active{% endif %}"
+            >
+              <i class="bi bi-shield-lock me-2"></i>Сменить пароль
+            </a>
+          </li>
         {% endif %}
         <li>
           <a href="#" class="coming-soon">
