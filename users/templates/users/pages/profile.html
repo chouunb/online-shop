@@ -1,23 +1,19 @@
-{% extends "layouts/base.html" %}
+{% extends "users/layouts/profile_base.html" %}
 {% load static %}
 
 {% block page_title %}Профиль{% endblock page_title %}
+
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "shop/css/includes/post_container.css" %}">
+{% endblock styles %}
 
 {% block scripts %}
   <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
 {% endblock scripts %}
 
 
-{% block page_content %}
-  {% if user == request.user %}
-    <h1>Мой профиль</h1>
-    <a href="{% url 'users:cart' %}" class="btn btn-success">
-      Посмотреть корзину
-    </a>
-
-  {% else %}
-    <h1>Профиль пользователя {{ user }}</h1>
-  {% endif %}
+{% block profile_page_content %}
   <div class="products-grid">
     {% if products %}
       {% for product in products %}
@@ -29,10 +25,6 @@
       <p>Объявлений ещё нет. Загляните позже!</p>
     {% endif %}
   </div>
-    <form class='nav-link' method="POST" action="{% url 'users:logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success">Выйти из аккаута</button>
-    </form>
 
   {% include "shop/includes/pagination.html" %}
-{% endblock page_content %}
+{% endblock profile_page_content %}
