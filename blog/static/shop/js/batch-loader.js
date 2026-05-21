@@ -1,5 +1,5 @@
 import { getAction } from "/static/js/utils.js";
-import { formatDatesInHTML } from "./format-dates.js";
+import { formatDatesInHTML } from "../../../../static/js/format-dates.js";
 
 class BatchLoader {
     constructor(containerId) {
