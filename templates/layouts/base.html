@@ -20,8 +20,8 @@
         {% block scripts %}{% endblock scripts %}
     </head>
     <body class="d-flex flex-column min-vh-100" data-bs-theme="{{ current_theme }}" data-theme-toggle-url="{% url "users:toggle_theme" %}">
-        <header>
-            <nav class="navbar navbar-expand-sm rounded-bottom border-bottom border-success" >
+        <header class="header rounded-bottom border-bottom border-2">
+            <nav class="navbar navbar-expand-sm" >
                 <div class="container-fluid">
                     <a class="navbar-brand" href="{% url 'blog:main_page' %}">WingsOfFreedom</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -72,7 +72,7 @@
         </header>
 
         <main class="flex-grow-1">{% block page_content %}{% endblock page_content %}</main>
-        <footer class="text-white rounded-top py-3" style="background-color: #1b4332;">
+        <footer class="footer rounded-top border-top border-2 py-3">
         <div class="container-fluid">
             <div class="text-center">
             &copy; Все права защищены 2025
