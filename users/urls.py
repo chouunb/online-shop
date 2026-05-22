@@ -34,6 +34,12 @@ urlpatterns = [
         template_name="users/pages/password_reset_complete.html"
     ), name='password_reset_complete'),
 
+    path('my/password-reset/', views.ProfilePasswordResetView.as_view(), name="profile_password_reset"),
+
+    path('my/password-reset/instructions-sent/', auth_views.PasswordResetDoneView.as_view(
+        template_name="users/pages/password_reset_profile_instructions_sent.html"
+    ), name='profile_password_reset_instructions_sent'),
+
 
     path("toggle-theme/", views.toggle_theme, name="toggle_theme"),
 
