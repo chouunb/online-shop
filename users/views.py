@@ -113,3 +113,8 @@ class CartProductsView(LoginRequiredMixin, ListView):
         return CartItem.objects.filter(
             user=self.request.user
         ).select_related('product')
+
+
+class SettingsView(TemplateView):
+    """Страница настроек профиля"""
+    template_name = 'users/pages/settings.html'
