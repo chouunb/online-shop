@@ -17,9 +17,9 @@ class CustomAuthenticationForm(AuthenticationForm):
       'invalid_login': (
         "Пожалуйста, введите корректные email/имя пользователя и пароль. "
         "Обратите внимание, что оба поля могут быть чувствительны к регистру."
-      )
+      ),
+      'inactive': "Аккаунт не активирован. Проверьте почту для активации."
     })
-
 
 class CustomUserCreationForm(UserCreationForm):
   class Meta:
