@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
 
 from blog.models import CartItem
 from django.conf import settings
@@ -52,17 +53,22 @@ class RegisterView(CreateView):
         )
         
         site_name = get_current_site(self.request).name
-        subject = f"Активация аккаунта - {site_name}"
-        message = (
-            f"Добро пожаловать на {site_name}!\n\n"
-            "Для активации вашего аккаунта перейдите по ссылке:\n"
-            f"{activation_url}\n\n"
-            "Ссылка действительна в течение 24 часов."
-        )
+        subject = render_to_string('users/emails/subjects/activate_account.txt', {
+            'site_name': site_name,
+        })
+        message = render_to_string('users/emails/activate_account.txt', {
+            'site_name': site_name,
+            'activation_url': activation_url
+        })
+        html_message = render_to_string('users/emails/activate_account.html', {
+            'site_name': site_name,
+            'activation_url': activation_url
+    })
         
         send_mail(
             subject,
             message,
+            html_message=html_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email]
         )
