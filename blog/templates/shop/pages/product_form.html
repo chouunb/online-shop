@@ -1,22 +1,61 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
-{% block page_title %}{{ name }}{% endblock page_title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static "shop/css/includes/product_form.css" %}">
+{% endblock styles %}
+
+{% block page_title %}
+    {{ name }}
+{% endblock page_title %}
 
 {% block page_content %}
-    <h1>{{ name }}</h1>
 
-    <form method="POST" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-    
-        {% for field in form %}
-            <div>
-                {{ field.label_tag }}
-                {{ field }}
-                {{ field.errors }}
-                {{ field.help_text }}
-            </div>
-        {% endfor %}
+<div class="product-form-wrapper">
 
-        <button type="submit" class="btn btn-success">{{ submit_button_text }}</button>
-    </form>
+    <div class="product-form-card">
+
+        <div class="form-header">
+            <h1>{{ name }}</h1>
+            <p>Создайте новое объявление для продажи товара</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" novalidate>
+
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+
+                    <label class="form-label">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="form-help">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="form-errors">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn">
+                {{ submit_button_text }}
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
 {% endblock page_content %}
