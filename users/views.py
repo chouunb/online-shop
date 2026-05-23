@@ -17,6 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from phonenumber_field.phonenumber import PhoneNumber
 from django.contrib.auth.decorators import login_required
+from .forms import AvatarUpdateForm
 
 from blog.models import CartItem
 from django.conf import settings
@@ -254,3 +255,22 @@ class SettingsView(TemplateView):
     extra_context = {
         'FIREBASE_API_KEY': settings.FIREBASE_API_KEY,
     }
+
+@login_required
+def update_avatar_view(request):
+
+    if request.method == "POST":
+
+        form = AvatarUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user
+        )
+
+        if form.is_valid():
+            form.save()
+
+    return redirect(
+        'users:profile',
+        username=request.user.username
+    )

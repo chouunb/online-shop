@@ -47,6 +47,7 @@ urlpatterns = [
         template_name="users/pages/password_reset_profile_instructions_sent.html"
     ), name='profile_password_reset_instructions_sent'),
 
+    path('profile/avatar/update/', views.update_avatar_view, name='update_avatar'),
 
     path("toggle-theme/", views.toggle_theme, name="toggle_theme"),
 
