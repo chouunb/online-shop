@@ -1,7 +1,244 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
-{% block page_title %}Главная страница{% endblock page_title %}
+{% block page_title %}
+    Главная страница
+{% endblock page_title %}
+
+{% block styles %}
+    {{ block.super }}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/pages/home.css' %}"
+    >
+{% endblock styles %}
+
+{% block scripts %}
+    <script
+        src="{% static 'shop/js/pages/home.js' %}"
+        defer
+    ></script>
+{% endblock scripts %}
 
 {% block page_content %}
-  <h1>Главная страница<h1>
+
+<div class="home-page">
+
+    <!-- HERO -->
+
+    <section class="hero-section">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">
+                🚀 Новый маркетплейс
+            </span>
+
+            <h1 class="hero-title">
+                Покупайте и продавайте
+                <span>легко</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Тысячи объявлений, удобный поиск
+                и быстрые сделки в одном месте
+            </p>
+
+            <form
+                action="{% url 'blog:product_search' %}"
+                method="GET"
+                class="hero-search"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Поиск товаров..."
+                >
+
+                <button type="submit">
+                    Найти
+                </button>
+
+            </form>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="{% url 'blog:new_product' %}"
+                    class="hero-btn primary-btn"
+                >
+                    Разместить объявление
+                </a>
+
+                <a
+                    href="{% url 'blog:product_list' %}"
+                    class="hero-btn secondary-btn"
+                >
+                    Смотреть объявления
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+
+    </section>
+
+    <!-- КАТЕГОРИИ -->
+
+    <section class="categories-section">
+
+        <div class="section-header">
+
+            <h2>
+                Популярные категории
+            </h2>
+
+            <p>
+                Найдите всё что нужно
+            </p>
+
+        </div>
+
+        <div class="categories-grid">
+
+            <div class="category-card">
+                <span>📱</span>
+                <h3>Электроника</h3>
+            </div>
+
+            <div class="category-card">
+                <span>🎮</span>
+                <h3>Игры</h3>
+            </div>
+
+            <div class="category-card">
+                <span>👕</span>
+                <h3>Одежда</h3>
+            </div>
+
+            <div class="category-card">
+                <span>🚗</span>
+                <h3>Авто</h3>
+            </div>
+
+            <div class="category-card">
+                <span>📚</span>
+                <h3>Книги</h3>
+            </div>
+
+            <div class="category-card">
+                <span>🏋️</span>
+                <h3>Спорт</h3>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ПОЧЕМУ МЫ -->
+
+    <section class="why-us-section">
+
+        <div class="section-header">
+
+            <h2>
+                Почему выбирают нас
+            </h2>
+
+            <p>
+                Всё для удобной покупки и продажи
+            </p>
+
+        </div>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    ⚡
+                </div>
+
+                <h3>
+                    Быстро
+                </h3>
+
+                <p>
+                    Размещайте объявления
+                    за пару минут
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🔒
+                </div>
+
+                <h3>
+                    Безопасно
+                </h3>
+
+                <p>
+                    Система отзывов
+                    и проверенные продавцы
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Удобно
+                </h3>
+
+                <p>
+                    Умный поиск
+                    и категории
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+
+    <section class="cta-section">
+
+        <div class="cta-content">
+
+            <h2>
+                Есть что продать?
+            </h2>
+
+            <p>
+                Создайте объявление бесплатно
+                прямо сейчас
+            </p>
+
+            <a
+                href="{% url 'blog:new_product' %}"
+                class="cta-btn"
+            >
+                Создать объявление
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
 {% endblock page_content %}

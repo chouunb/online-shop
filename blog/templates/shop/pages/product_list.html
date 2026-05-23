@@ -4,46 +4,135 @@
 {% block page_title %}Все товары{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{% static "shop/css/includes/product_container.css" %}">
+    {{ block.super }}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/includes/product_container.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/pages/product_list.css' %}"
+    >
 {% endblock styles %}
 
 {% block scripts %}
-    <script type="module" src="{% static 'shop/js/pages/product_list.js' %}"></script>
-    <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
+    <script
+        type="module"
+        src="{% static 'shop/js/pages/product_list.js' %}"
+        defer
+    ></script>
+
+    <script
+        src="{% static 'shop/js/cart.js' %}"
+        type="module"
+        defer
+    ></script>
 {% endblock %}
 
-
 {% block page_content %}
-    <h1>Все товары</h1>
 
-    {% if products %}
+<div class="products-page">
 
-    <div 
-        id="productsContainer"
-        class="products-grid"
-        data-initial-offset="{{ products|length }}"
-        data-has-more="{{ has_more_products|yesno:'true,false' }}"
-        data-batch-size="{{ products_per_batch }}"
-        data-load-more-url="{% url 'blog:load_more_products' %}"
-        data-trigger-type="scroll"
-    >
+    <!-- HERO -->
 
-        {% for product in products %}
-            {% include 'shop/includes/product_container.html' %}
-        {% endfor %}
+    <section class="products-hero">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">
+                🔥 Актуальные объявления
+            </span>
+
+            <h1 class="hero-title">
+                Найдите то,
+                <span>что вам нужно</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Тысячи товаров, удобный поиск и безопасные сделки
+                в одном месте
+            </p>
+
+        </div>
+
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+
+    </section>
+
+    <!-- HEADER -->
+
+    <div class="products-header">
+
+        <div>
+            <h2 class="products-title">
+                Все товары
+            </h2>
+
+            <p class="products-subtitle">
+                Найдено объявлений: {{ products|length }}
+            </p>
+        </div>
 
     </div>
 
+    <!-- PRODUCTS -->
+
+    {% if products %}
+
+        <div
+            id="productsContainer"
+            class="products-grid"
+            data-initial-offset="{{ products|length }}"
+            data-has-more="{{ has_more_products|yesno:'true,false' }}"
+            data-batch-size="{{ products_per_batch }}"
+            data-load-more-url="{% url 'blog:load_more_products' %}"
+            data-trigger-type="scroll"
+        >
+
+            {% for product in products %}
+                {% include 'shop/includes/product_container.html' %}
+            {% endfor %}
+
+        </div>
+
     {% else %}
-        <p>Товаров ещё нет. Загляните позже!</p>
+
+        <div class="empty-products">
+
+            <h3>
+                Пока товаров нет
+            </h3>
+
+            <p>
+                Будьте первым, кто разместит объявление
+            </p>
+
+        </div>
+
     {% endif %}
 
+    <!-- LOADER -->
 
     {% if has_more_products %}
-        <div id="loadingSpinner" class="text-center d-none">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Загрузка...</span>
-            </div>
+
+        <div
+            id="loadingSpinner"
+            class="loading-wrapper d-none"
+        >
+
+            <div class="modern-spinner"></div>
+
+            <p>
+                Загружаем товары...
+            </p>
+
         </div>
+
     {% endif %}
+
+</div>
+
 {% endblock page_content %}
