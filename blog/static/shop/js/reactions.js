@@ -3,86 +3,116 @@ import { formatDate } from "../../../../static/js/format-dates.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const reviewFormElement = document.getElementById('reviewForm');
+  // Форма добавления отзыва
+  const reviewFormElement =
+    document.getElementById('reviewForm');
 
   if (!reviewFormElement) return;
 
-  reviewFormElement.addEventListener('submit', async function(event) {
-    event.preventDefault();
+  reviewFormElement.addEventListener(
+    'submit',
+    async function(event) {
 
-    const formData = new FormData(this);
-    const url = this.dataset.addReviewUrl;
+      event.preventDefault();
 
-    const reviewErrorsElement =
-      document.getElementById('reviewErrors');
+      const formData = new FormData(this);
+      const url = this.dataset.addReviewUrl;
 
-    reviewErrorsElement.classList.add('d-none');
-    reviewErrorsElement.textContent = '';
+      // Блок ошибок
+      const reviewErrorsElement =
+        document.getElementById('reviewErrors');
 
-    try {
-      const data = await postAction(url, formData);
+      reviewErrorsElement.classList.add('d-none');
+      reviewErrorsElement.textContent = '';
 
-      if (!data) {
-        reviewErrorsElement.textContent =
-          'Ошибка сервера';
+      try {
 
-        reviewErrorsElement.classList.remove('d-none');
+        const data = await postAction(url, formData);
 
-        return;
-      }
-      if (data.success) {
+        // Ошибка сервера
+        if (!data) {
 
-        this.querySelector('textarea').value = '';
+          reviewErrorsElement.textContent =
+            'Ошибка сервера';
 
-        const reviewsListElement =
-          document.getElementById('reviewsList');
+          reviewErrorsElement.classList.remove('d-none');
 
-        const emptyMessageElement =
-          reviewsListElement.querySelector('#emptyMessage');
-
-        if (emptyMessageElement) {
-          emptyMessageElement.remove();
+          return;
         }
 
-        reviewsListElement.insertAdjacentHTML(
-          'afterbegin',
-          data.review_html
+        // Успешное добавление
+        if (data.success) {
+
+          // Очищаем textarea
+          this.querySelector('textarea').value = '';
+
+          // Контейнер с отзывами
+          const reviewsContainerElement =
+            document.getElementById('reviewsContainer');
+
+          // Сообщение "нет отзывов"
+          const emptyMessageElement =
+            document.getElementById('emptyMessage');
+
+          if (emptyMessageElement) {
+            emptyMessageElement.remove();
+          }
+
+          // Добавляем новый отзыв В НАЧАЛО
+          reviewsContainerElement.insertAdjacentHTML(
+            'afterbegin',
+            data.review_html
+          );
+
+          // Новый отзыв
+          const newReviewElement =
+            reviewsContainerElement.firstElementChild;
+
+          // Форматирование даты
+          const dateElement =
+            newReviewElement.querySelector('.date-field');
+
+          if (dateElement) {
+            formatDate(dateElement);
+          }
+
+          // Обновляем количество отзывов
+          const reviewsTitleElement =
+            document.getElementById('reviewsTitle');
+
+          if (reviewsTitleElement) {
+
+            reviewsTitleElement.textContent =
+              `Отзывы (${data.reviews_count})`;
+          }
+
+          // Увеличиваем offset batch loader
+          if (window.reviewsBatchLoader) {
+
+            window.reviewsBatchLoader.offset += 1;
+          }
+
+        } else {
+
+          // Ошибки формы
+          reviewErrorsElement.textContent =
+            data.error;
+
+          reviewErrorsElement.classList.remove('d-none');
+        }
+
+      } catch (error) {
+
+        console.error(
+          'Ошибка при добавлении отзыва:',
+          error
         );
 
-        const newReviewElement =
-          reviewsListElement.firstElementChild;
+        reviewErrorsElement.textContent =
+          'Произошла ошибка при отправке отзыва';
 
-        const dateElement =
-          newReviewElement.querySelector('.date-field');
-
-        // УВЕЛИЧИВАЕМ offset на 1, так как добавили новый отзыв
-        window.reviewsBatchLoader.offset += 1;
-
-        if (dateElement) {
-          formatDate(dateElement);
-        }
-
-        const reviewsTitleElement =
-          document.querySelector('#reviewsTitle');
-
-        reviewsTitleElement.textContent =
-          `Отзывы (${data.reviews_count})`;
-
-      } else {
-
-        reviewErrorsElement.textContent = data.error;
         reviewErrorsElement.classList.remove('d-none');
-
       }
-
-    } catch (error) {
-
-      console.error('Ошибка при добавлении отзыва:', error);
-
-      reviewErrorsElement.textContent =
-        'Произошла ошибка при отправке отзыва';
-
-      reviewErrorsElement.classList.remove('d-none');
     }
-  });
+  );
 });

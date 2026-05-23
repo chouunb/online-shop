@@ -3,80 +3,145 @@ import { formatDatesInHTML } from "../../../../static/js/format-dates.js";
 
 class BatchLoader {
     constructor(containerId) {
-        this.container = document.getElementById(containerId);
-        this.offset = Number(this.container.dataset.initialOffset);
-        this.hasMore = this.container.dataset.hasMore === 'true';
-        this.batchSize = Number(this.container.dataset.batchSize);
-        this.loadMoreUrl = this.container.dataset.loadMoreUrl;
-        this.triggerType = this.container.dataset.triggerType;
+
+        this.container =
+            document.getElementById(containerId);
+
+        // НОВОЕ
+        this.itemsContainer =
+            document.getElementById('reviewsContainer');
+
+        this.offset =
+            Number(this.container.dataset.initialOffset);
+
+        this.hasMore =
+            this.container.dataset.hasMore === 'true';
+
+        this.batchSize =
+            Number(this.container.dataset.batchSize);
+
+        this.loadMoreUrl =
+            this.container.dataset.loadMoreUrl;
+
+        this.triggerType =
+            this.container.dataset.triggerType;
+
         this.loading = false;
 
         this.init();
     }
 
     init() {
+
         if (this.triggerType === 'scroll') {
-        window.addEventListener('scroll', () => {
-            if ((window.scrollY + window.innerHeight) > (document.documentElement.scrollHeight - 1)) {
-            this.loadMore();
-            }
-        });
+
+            window.addEventListener('scroll', () => {
+
+                if (
+                    (window.scrollY + window.innerHeight) >
+                    (document.documentElement.scrollHeight - 1)
+                ) {
+                    this.loadMore();
+                }
+
+            });
+
         } else if (this.triggerType === 'button') {
-            this.loadMoreBtn = document.getElementById(this.container.dataset.loadMoreBtnId);
+
+            this.loadMoreBtn =
+                document.getElementById(
+                    this.container.dataset.loadMoreBtnId
+                );
+
             if (this.loadMoreBtn) {
+
                 this.loadMoreBtn.addEventListener('click', () => {
-                this.loadMore();
+                    this.loadMore();
                 });
+
             }
         }
     }
 
     async loadMore() {
+
         if (this.loading || !this.hasMore) return;
 
         this.loading = true;
+
         this.showLoadingSpinner();
+
         if (this.triggerType === 'button') {
             this.hideLoadMoreButton();
         }
 
         try {
-            const data = await getAction(`${this.loadMoreUrl}?offset=${this.offset}`);
 
-            const html = formatDatesInHTML(data.html); 
+            const data =
+                await getAction(
+                    `${this.loadMoreUrl}?offset=${this.offset}`
+                );
 
-            this.container.insertAdjacentHTML("beforeend", html);
+            const html =
+                formatDatesInHTML(data.html);
+
+            // ГЛАВНОЕ ИСПРАВЛЕНИЕ
+            this.itemsContainer.insertAdjacentHTML(
+                "beforeend",
+                html
+            );
+
             this.offset += this.batchSize;
+
             this.hasMore = data.has_more;
-            // Если кнопочная версия и есть ещё сущности для загрузки - возвращаем кнопку
-            if (this.triggerType === 'button' && this.hasMore) {
+
+            if (
+                this.triggerType === 'button' &&
+                this.hasMore
+            ) {
                 this.showLoadMoreButton();
             }
+
         } catch (error) {
+
             console.error("Ошибка загрузки:", error);
+
             if (this.triggerType === 'button') {
                 this.showLoadMoreButton();
             }
+
         } finally {
+
             this.loading = false;
+
             this.hideLoadingSpinner();
         }
     }
 
     showLoadingSpinner() {
-        document.getElementById("loadingSpinner")?.classList.remove("d-none");
+
+        document
+            .getElementById("loadingSpinner")
+            ?.classList.remove("d-none");
     }
 
     hideLoadingSpinner() {
-        document.getElementById("loadingSpinner")?.classList.add("d-none");
+
+        document
+            .getElementById("loadingSpinner")
+            ?.classList.add("d-none");
     }
 
     showLoadMoreButton() {
-        this.loadMoreBtn.classList.remove("d-none");
+
+        this.loadMoreBtn
+            ?.classList.remove("d-none");
     }
 
-hideLoadMoreButton() {
-        this.loadMoreBtn.classList.add("d-none");
+    hideLoadMoreButton() {
+
+        this.loadMoreBtn
+            ?.classList.add("d-none");
     }
 }
 
