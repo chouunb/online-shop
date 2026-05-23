@@ -496,3 +496,26 @@ def load_more_reviews_view(request, product_id):
         'html': reviews_html,
         'has_more': has_more_reviews
     })
+
+@login_required
+@require_POST
+def delete_review_view(request, review_id):
+
+    review = get_object_or_404(
+        Review,
+        id=review_id
+    )
+
+    # Только автор может удалить
+    if review.author != request.user:
+
+        return JsonResponse({
+            "success": False,
+            "error": "Нельзя удалить чужой отзыв"
+        }, status=403)
+
+    review.delete()
+
+    return JsonResponse({
+        "success": True
+    })

@@ -1,40 +1,62 @@
-<div class="card mb-3">
-  <div class="card-body">
+<div class="card mb-3" id="review-{{ review.id }}">
+    <div class="card-body">
 
-    <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
 
-      <div>
-        <h6 class="card-title mb-1">
-          <a
-            href="{% url 'users:profile' review.author.username %}"
-            class="text-decoration-none"
-          >
-            {{ review.author.username }}
-          </a>
-        </h6>
+            <div>
 
-        <div class="text-warning">
-          {% for i in "12345" %}
-            {% if forloop.counter <= review.rating %}
-              ★
-            {% else %}
-              ☆
-            {% endif %}
-          {% endfor %}
+                <h6 class="card-title mb-1">
+
+                    <a
+                        href="{% url 'users:profile' review.author.username %}"
+                        class="text-decoration-none"
+                    >
+                        {{ review.author.username }}
+                    </a>
+
+                </h6>
+
+                <div class="text-warning">
+
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <small
+                    class="text-muted date-field"
+                    data-date="{{ review.created_at|date:'c' }}"
+                >
+                </small>
+
+                {% if request.user == review.author %}
+
+                    <button
+                        class="btn btn-sm btn-outline-danger delete-review-btn"
+                        data-review-id="{{ review.id }}"
+                        data-delete-url="{% url 'blog:delete_review' review.id %}"
+                    >
+                        ✕
+                    </button>
+
+                {% endif %}
+
+            </div>
+
         </div>
-      </div>
 
-      <small
-        class="text-muted date-field"
-        data-date="{{ review.created_at|date:'c' }}"
-      >
-      </small>
+        <p class="card-text mt-3 mb-0">
+            {{ review.text }}
+        </p>
 
     </div>
-
-    <p class="card-text mt-3 mb-0">
-      {{ review.text }}
-    </p>
-
-  </div>
 </div>
