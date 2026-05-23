@@ -1,0 +1,165 @@
+.category-page {
+    padding: 40px 0 80px;
+}
+
+/* HERO */
+
+.category-hero {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 70px;
+
+    margin-bottom: 50px;
+
+    border-radius: 32px;
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(37, 211, 102, 0.18),
+            transparent 35%),
+        linear-gradient(
+            135deg,
+            #111827,
+            #0f172a
+        );
+
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.category-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-glow {
+    position: absolute;
+
+    right: -120px;
+    top: -120px;
+
+    width: 320px;
+    height: 320px;
+
+    border-radius: 50%;
+
+    background: rgba(37, 211, 102, 0.18);
+
+    filter: blur(80px);
+}
+
+.back-link {
+    display: inline-block;
+
+    margin-bottom: 25px;
+
+    color: #9ca3af;
+
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.back-link:hover {
+    color: white;
+}
+
+.category-badge {
+    display: inline-block;
+
+    margin-bottom: 20px;
+    padding: 10px 18px;
+
+    border-radius: 999px;
+
+    background: rgba(37, 211, 102, 0.12);
+
+    color: #22c55e;
+
+    font-weight: 700;
+}
+
+.category-title {
+    font-size: 64px;
+    font-weight: 900;
+
+    color: white;
+
+    margin-bottom: 20px;
+}
+
+.category-subtitle {
+    max-width: 650px;
+
+    color: #9ca3af;
+
+    font-size: 22px;
+    line-height: 1.6;
+}
+
+/* INFO */
+
+.products-info {
+    margin-bottom: 30px;
+
+    color: #9ca3af;
+
+    font-size: 18px;
+}
+
+.products-info span {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+/* GRID */
+
+.products-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(320px, 1fr));
+
+    gap: 30px;
+}
+
+/* EMPTY */
+
+.empty-category {
+    padding: 80px 20px;
+
+    text-align: center;
+
+    border-radius: 24px;
+
+    background: rgba(255,255,255,0.03);
+
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.empty-icon {
+    font-size: 70px;
+
+    margin-bottom: 20px;
+}
+
+.empty-category h2 {
+    color: white;
+
+    margin-bottom: 15px;
+}
+
+.empty-category p {
+    color: #9ca3af;
+
+    margin-bottom: 25px;
+}
+
+.categories-section .categories-grid .category-card {
+    text-decoration: none !important;
+}
+
+.category-card * {
+    text-decoration: none !important;
+}

@@ -12,6 +12,11 @@
         rel="stylesheet"
         href="{% static 'shop/css/pages/home.css' %}"
     >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/pages/category_products.css' %}"
+    >
 {% endblock styles %}
 
 {% block scripts %}
@@ -106,35 +111,46 @@
 
         <div class="categories-grid">
 
-            <div class="category-card">
-                <span>📱</span>
-                <h3>Электроника</h3>
-            </div>
+            {% for category in categories %}
 
-            <div class="category-card">
-                <span>🎮</span>
-                <h3>Игры</h3>
-            </div>
+                <a
+                    href="{% url 'blog:category_products' category.slug %}"
+                    class="category-card"
+                >
 
-            <div class="category-card">
-                <span>👕</span>
-                <h3>Одежда</h3>
-            </div>
+                    <span class="category-icon">
 
-            <div class="category-card">
-                <span>🚗</span>
-                <h3>Авто</h3>
-            </div>
+                        {% if category.name == 'Электроника' %}
+                            📱
 
-            <div class="category-card">
-                <span>📚</span>
-                <h3>Книги</h3>
-            </div>
+                        {% elif category.name == 'Обувь' %}
+                            👟
 
-            <div class="category-card">
-                <span>🏋️</span>
-                <h3>Спорт</h3>
-            </div>
+                        {% elif category.name == 'Одежда' %}
+                            👕
+
+                        {% elif category.name == 'Авто' %}
+                            🚗
+
+                        {% elif category.name == 'Книги' %}
+                            📚
+
+                        {% elif category.name == 'Спорт' %}
+                            🏋️
+
+                        {% else %}
+                            📦
+                        {% endif %}
+
+                    </span>
+
+                    <h3>
+                        {{ category.name }}
+                    </h3>
+
+                </a>
+
+            {% endfor %}
 
         </div>
 

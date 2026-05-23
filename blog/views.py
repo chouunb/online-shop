@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
+from django.db.models import Count
 from blog.models import Product, Category, Tag, CartItem, Review
 from blog.forms import ProductForm
 
@@ -50,6 +51,12 @@ class ProductListView(ListView):
         )
 
         context["products_per_batch"] = self.products_per_batch
+
+        context["categories"] = (
+            Category.objects.annotate(
+                products_count=Count('products')
+            )
+        )
 
         return context
 
@@ -128,14 +135,43 @@ class CategoryProductsView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        return Product.objects.filter(category=self.category, status='published')
+
+        self.category = get_object_or_404(
+            Category,
+            slug=self.kwargs['category_slug']
+        )
+
+        queryset = Product.objects.filter(
+            category=self.category,
+            status='published'
+        ).order_by('-created_at')
+
+        if self.request.user.is_authenticated:
+
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'cart_items',
+                    queryset=CartItem.objects.filter(
+                        user=self.request.user
+                    ),
+                    to_attr='user_cart_items'
+                )
+            )
+
+        return queryset
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
 
         context['category'] = self.category
-        
+
+        context['categories'] = (
+            Category.objects.annotate(
+                products_count=Count('products')
+            )
+        )
+
         return context
 
 
@@ -277,6 +313,13 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
 class MainPageView(TemplateView):
     template_name = 'shop/pages/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['categories'] = Category.objects.all()
+
+        return context
 
 
 from django.contrib.auth.decorators import login_required

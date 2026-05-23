@@ -1,21 +1,118 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block page_title %}Объявления в категории {{ category.name }}{% endblock page_title %}
+{% block page_title %}
+    {{ category.name }} | WingsOfFreedom
+{% endblock page_title %}
+
+{% block styles %}
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/includes/product_container.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'shop/css/pages/category_products.css' %}"
+    >
+{% endblock styles %}
 
 {% block scripts %}
-  <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
+    <script
+        src="{% static 'shop/js/cart.js' %}"
+        type="module"
+        defer
+    ></script>
+
+    <script
+        src="{% static 'shop/js/pages/category_products.js' %}"
+        defer
+    ></script>
 {% endblock scripts %}
 
 {% block page_content %}
-  <a href="javascript:history.back()">&larr;Назад</a>
-  <h1>Объявления в категории: {{ category.name }}</h1>
-  
-  {% if products %}
-    {% for product in products %}
-      {% include 'shop/includes/product_container.html' %}
-    {% endfor %}
-  {% else %}
-    <p>В этой категории пока нет объявлений.</p>
-  {% endif %}
+
+<div class="category-page">
+
+    <!-- HERO -->
+
+    <section class="category-hero">
+
+        <div class="category-hero-content">
+
+            <a
+                href="{% url 'blog:product_list' %}"
+                class="back-link"
+            >
+                ← Ко всем объявлениям
+            </a>
+
+            <div class="category-badge">
+                Категория
+            </div>
+
+            <h1 class="category-title">
+                {{ category.name }}
+            </h1>
+
+            <p class="category-subtitle">
+                Найдите лучшие товары в категории
+                «{{ category.name }}»
+            </p>
+
+        </div>
+
+        <div class="hero-glow"></div>
+
+    </section>
+
+    <!-- PRODUCTS -->
+
+    {% if products %}
+
+        <div class="products-info">
+
+            Найдено товаров:
+            <span>{{ products|length }}</span>
+
+        </div>
+
+        <div class="products-grid">
+
+            {% for product in products %}
+                {% include 'shop/includes/product_container.html' %}
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-category">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h2>
+                Пока нет товаров
+            </h2>
+
+            <p>
+                В этой категории ещё нет объявлений
+            </p>
+
+            <a
+                href="{% url 'blog:new_product' %}"
+                class="btn btn-success"
+            >
+                Разместить объявление
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
 {% endblock page_content %}
+
