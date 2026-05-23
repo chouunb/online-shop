@@ -3,44 +3,111 @@
 
 {% block page_title %} {{ block.super }} | Поиск объявлений {% endblock page_title %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{% static "shop/css/includes/product_search.css" %}">
+{% endblock styles %}
+
 {% block scripts %}
   <script src="{% static "shop/js/cart.js" %}" type="module" defer></script>
 {% endblock scripts %}
 
 {% block page_content %}
-  <h1>Поиск объявлений</h1>
 
-  <form>
-    <input autocomplete="off" spellcheck="false" type="text" name="search" placeholder="Введите запрос" value="{{ request.GET.search }}">
+  <div class="search-page">
 
-    <label>
-      <input type="checkbox" name="search_category" {% if request.GET.search_category %}checked{% endif %}>
-      Искать в категориях
-    </label>
-
-    <label>
-      <input type="checkbox" name="search_tag" {% if request.GET.search_tag %}checked{% endif %}>
-      Искать в тегах
-    </label>
-
-    <button type="submit" class="btn btn-success">Найти</button>
-    <button type="reset" class="btn btn-success">Очистить</button>
-  </form>
-
-  {% if search_performed %}
-    {% if products %}
-      <h2>Найдено {{ paginator.count }} объявление(-я, -й):</h2>
-      <div class="products-grid">
-        {% for product in products %}
-          {% include 'shop/includes/product_container.html' %}
-        {% endfor %}
+      <div class="search-header">
+          <h1>Поиск объявлений</h1>
+          <p>Найдите нужный товар среди тысяч объявлений</p>
       </div>
 
-      {% include "shop/includes/pagination.html" %}
-    {% else %}
-      <p>По вашему запросу ничего не найдено.</p>
-    {% endif %}
-  {% else %}
-    <p>Введите запрос для поиска постов</p>
-  {% endif %}
+      <form class="search-form">
+
+          <div class="search-input-wrapper">
+
+              <input
+                  autocomplete="off"
+                  spellcheck="false"
+                  type="text"
+                  name="search"
+                  placeholder="Введите запрос..."
+                  value="{{ request.GET.search }}"
+                  class="search-input"
+              >
+
+              <button type="submit" class="search-btn">
+                  Найти
+              </button>
+
+          </div>
+
+          <div class="search-options">
+
+              <label class="search-checkbox">
+
+                  <input
+                      type="checkbox"
+                      name="search_category"
+                      {% if request.GET.search_category %}checked{% endif %}
+                  >
+
+                  <span>Искать в категориях</span>
+
+              </label>
+
+              <label class="search-checkbox">
+
+                  <input
+                      type="checkbox"
+                      name="search_tag"
+                      {% if request.GET.search_tag %}checked{% endif %}
+                  >
+
+                  <span>Искать в тегах</span>
+
+              </label>
+
+              <a href="{% url 'blog:product_search' %}" class="clear-btn">
+                  Очистить
+              </a>
+
+          </div>
+
+      </form>
+
+      {% if search_performed %}
+
+          {% if products %}
+
+              <div class="search-results-info">
+                  Найдено {{ paginator.count }} объявление(-я, -й)
+              </div>
+
+              <div class="products-grid">
+                  {% for product in products %}
+                      {% include 'shop/includes/product_container.html' %}
+                  {% endfor %}
+              </div>
+
+              {% include "shop/includes/pagination.html" %}
+
+          {% else %}
+
+              <div class="empty-search">
+                  <h2>Ничего не найдено</h2>
+                  <p>Попробуйте изменить запрос</p>
+              </div>
+
+          {% endif %}
+
+      {% else %}
+
+          <div class="search-placeholder">
+              <h2>Начните поиск</h2>
+              <p>Введите название товара, категорию или тег</p>
+          </div>
+
+      {% endif %}
+
+  </div>
+
 {% endblock page_content %}
