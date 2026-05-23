@@ -1,0 +1,152 @@
+.cart-page-title {
+    font-size: 52px;
+    font-weight: bold;
+
+    color: white;
+
+    margin-bottom: 35px;
+}
+
+.cart-item {
+    background: #232830;
+
+    border: 1px solid #313844;
+    border-radius: 24px;
+
+    padding: 24px;
+
+    transition: 0.25s ease;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cart-item:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35);
+}
+
+.cart-item img {
+    width: 100%;
+    height: 220px;
+
+    object-fit: cover;
+
+    border-radius: 18px;
+}
+
+.cart-item h3 {
+    color: white;
+
+    font-size: 28px;
+    font-weight: bold;
+
+    margin-bottom: 14px;
+}
+
+.cart-item .price {
+    font-size: 26px;
+    font-weight: bold;
+
+    color: #22c55e;
+}
+
+.cart-item-link {
+    text-decoration: none;
+    color: inherit;
+
+    display: block;
+}
+
+.cart-item-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.cart-item-link * {
+    text-decoration: none !important;
+}
+
+.quantity-controls {
+    background: #181d23;
+
+    border: 1px solid #374151;
+    border-radius: 16px;
+
+    padding: 10px 14px;
+
+    width: fit-content;
+}
+
+.quantity-controls button {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    transition: 0.2s ease;
+}
+
+.quantity-controls button:hover {
+    transform: scale(1.05);
+}
+
+.quantity {
+    min-width: 30px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.remove-cart-item-btn {
+    width: 100%;
+
+    margin-top: 18px;
+
+    border-radius: 14px;
+
+    padding: 12px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.remove-cart-item-btn:hover {
+    transform: translateY(-2px);
+}
+
+.empty-cart {
+    background: #232830;
+
+    border: 1px solid #313844;
+    border-radius: 24px;
+
+    padding: 70px 20px;
+
+    text-align: center;
+}
+
+.empty-cart h2 {
+    color: white;
+
+    font-size: 42px;
+
+    margin-bottom: 15px;
+}
+
+.empty-cart p {
+    color: #9ca3af;
+
+    font-size: 18px;
+}

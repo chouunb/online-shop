@@ -5,6 +5,11 @@
   {{ block.super }} | Корзина
 {% endblock page_title %}
 
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'users/css/includes/cart.css' %}">
+{% endblock styles %}
+
 {% block scripts %}
   <script
     src="{% static 'shop/js/cart.js' %}"
@@ -15,88 +20,97 @@
 
 {% block profile_page_content %}
 
-<h1 class="text-center mb-4">
-  Корзина
-</h1>
+  <h1 class="cart-page-title text-center">
+    Корзина
+  </h1>
 
-<div class="container">
+  <div class="container">
 
-  {% for item in cart_items %}
+    {% for item in cart_items %}
+      <div class="cart-item rounded p-3 mb-3">
 
-    <div class="cart-item rounded p-3 mb-3">
+        <div class="row align-items-center">
 
-      <div class="row align-items-center">
-
-        <!-- Фото -->
-        <div class="col-md-3">
-          {% if item.product.image %}
-            <img
-              src="{{ item.product.image.url }}"
-              class="img-fluid rounded"
-              alt="{{ item.product.name }}"
-            >
-          {% endif %}
-        </div>
-
-        <!-- Информация -->
-        <div class="col-md-6">
-
-          <h3>
-            {{ item.product.name }}
-          </h3>
-
-          <p class="fw-bold text-success">
-            {{ item.product.price }} ₽
-          </p>
-
-        </div>
-
-        <!-- Количество -->
-        <div class="col-md-3">
-
-          <div class="quantity-controls d-flex align-items-center gap-2">
-
-              <button
-                  class="btn btn-outline-secondary minus-btn"
-                  data-product-id="{{ item.product.id }}"
+          <!-- Фото -->
+          <div class="col-md-3">
+            {% if item.product.image %}
+              <img
+                src="{{ item.product.image.url }}"
+                class="img-fluid rounded"
+                alt="{{ item.product.name }}"
               >
-                  -
-              </button>
+            {% endif %}
+          </div>
 
-              <span class="quantity">
-                  {{ item.quantity }}
-              </span>
+          <!-- Информация -->
+          <div class="col-md-6">
+            <a
+              href="{% url 'blog:product_detail' product_slug=item.product.slug %}"
+              class="cart-item-link"
+            >     
+              <h3>
+                {{ item.product.name }}
+              </h3>
+            </a>
 
-              <button
-                  class="btn btn-outline-success plus-btn"
-                  data-product-id="{{ item.product.id }}"
-              >
-                  +
-              </button>
+            <p class="price">
+              {{ item.product.price }} ₽
+            </p>
 
           </div>
 
-          <button
-            class="btn btn-danger mt-2 remove-cart-item-btn"
-            data-product-id="{{ item.product.id }}"
-          >
-            Удалить из корзины
-          </button>
+          <!-- Количество -->
+          <div class="col-md-3">
+
+            <div class="quantity-controls d-flex align-items-center gap-2">
+
+                <button
+                    class="btn btn-outline-secondary minus-btn"
+                    data-product-id="{{ item.product.id }}"
+                >
+                    -
+                </button>
+
+                <span class="quantity">
+                    {{ item.quantity }}
+                </span>
+
+                <button
+                    class="btn btn-outline-success plus-btn"
+                    data-product-id="{{ item.product.id }}"
+                >
+                    +
+                </button>
+
+            </div>
+
+            <button
+              class="btn btn-danger mt-2 remove-cart-item-btn"
+              data-product-id="{{ item.product.id }}"
+            >
+              Удалить из корзины
+            </button>
+
+          </div>
 
         </div>
 
       </div>
 
+    {% empty %}
+
+    <div class="empty-cart">
+
+        <h2>Корзина пуста</h2>
+
+        <p>
+            Добавьте товары в корзину
+        </p>
+
     </div>
 
-  {% empty %}
+    {% endfor %}
 
-    <p class="text-center">
-      Корзина пуста.
-    </p>
-
-  {% endfor %}
-
-</div>
+  </div>
 
 {% endblock profile_page_content %}
